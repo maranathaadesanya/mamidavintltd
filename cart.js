@@ -1,4 +1,4 @@
-const MAMIDAV_ORDER_EMAIL = "info@mamidavintltd.com";
+const MAMIDAV_ORDER_EMAIL = "mail@mamidavintltd.com";
 const MAMIDAV_LOCAL_CART_KEY = "mamidav_cart";
 const API_BASE = "/api/";
 
@@ -166,6 +166,22 @@ function placeOrder() {
   ].join("\n");
   const mailto = "mailto:" + MAMIDAV_ORDER_EMAIL +
     "?subject=" + encodeURIComponent("New Order from mamidavintltd.com") +
+    "&body=" + encodeURIComponent(body);
+  window.location.href = mailto;
+}
+
+function requestPayment(method) {
+  const body = [
+    "Hello Mamidav International Limited,",
+    "",
+    `I would like to make a payment via ${method}. Please send me a secure payment link or further instructions.`,
+    "",
+    "Name:",
+    "Amount:",
+    "Reason for payment:",
+  ].join("\n");
+  const mailto = "mailto:" + MAMIDAV_ORDER_EMAIL +
+    "?subject=" + encodeURIComponent("Payment via " + method) +
     "&body=" + encodeURIComponent(body);
   window.location.href = mailto;
 }

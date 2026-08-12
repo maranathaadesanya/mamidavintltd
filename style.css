@@ -267,7 +267,7 @@ nav .cart-link:hover{background:var(--burgundy-2);color:white}
   .contact-panel{grid-template-columns:1fr}
 }
 @media(max-width:420px){
-  .brand-title small{font-size:6px}.hero-actions .btn,.hero-actions .btn-outline{width:100%}
+  .brand-title small{font-size:6px}.hero-actions .btn,.hero-actions .btn-outline-dark{width:100%}
   .float-card{transform:scale(.9);transform-origin:left center}.float-card.bottom{transform-origin:right center}
   .form-card{padding:21px}
 }

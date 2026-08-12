@@ -11,7 +11,7 @@ Redesign work:
 - Added a responsive mobile navigation menu.
 - Preserved the existing `cart.js`, including cart/localStorage and email-based inquiry/order behavior, while adding navigation/reveal behavior.
 - Preserved all existing product/order/investment/event/consultation page content.
-- Kept the existing email address used by the project: info@mamidavintltd.com.
+- Kept the existing email address used by the project: mail@mamidavintltd.com.
 - Added responsive layouts for desktop, tablet and mobile.
 
 Important before production:
