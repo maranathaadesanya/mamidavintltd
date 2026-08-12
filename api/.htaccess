@@ -1,0 +1,9 @@
+<Files "config.local.php">
+  Require all denied
+</Files>
+<IfModule !mod_authz_core.c>
+  <Files "config.local.php">
+    Order allow,deny
+    Deny from all
+  </Files>
+</IfModule>

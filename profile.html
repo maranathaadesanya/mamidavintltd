@@ -1,0 +1,39 @@
+
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My Profile</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css"></head>
+<body data-require-login="true">
+<header><img src="logo.png" class="logo" alt="Mamidav International Limited logo">
+<h1>Mamidav International Limited</h1>
+<nav>
+<a href="index.html">Home</a>
+<a href="agriculture.html">Agriculture</a>
+<a href="engineering.html">Engineering</a>
+<a href="services.html">Services</a>
+<a href="investors.html">Investors</a>
+<a href="dashboard.html">Dashboard</a>
+<a href="contact.html">Contact</a>
+<a href="cart.html" class="cart-link">Cart<span class="cart-badge">0</span></a>
+</nav></header>
+
+<div class="page-intro">
+<h2>My Profile</h2>
+<p><span id="profile-name">—</span> · <span id="profile-email">—</span></p>
+</div>
+
+<div class="container">
+<form class="form-card" id="profile-form" onsubmit="return doUpdateProfile(this)">
+<p id="form-error" style="color:#a33;font-size:13px;margin:0"></p>
+<p id="form-success" style="color:#2f6d3f;font-size:13px;margin:0"></p>
+<label>Full Name<input type="text" name="full_name" required></label>
+<label>Phone<input type="tel" name="phone"></label>
+<button type="submit" class="btn">Save Changes</button>
+</form>
+
+<div style="text-align:center;margin-top:20px">
+<a href="cart.html" class="btn-outline">View My Cart</a>
+<button class="btn-outline" onclick="doLogout()">Log Out</button>
+</div>
+</div>
+
+<footer style="text-align:center;padding:20px">© 2026 Mamidav International Limited</footer>
+<script src="cart.js"></script>
+</body></html>
