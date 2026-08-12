@@ -332,12 +332,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (href === page && !a.classList.contains("cart-link")) a.classList.add("active");
   });
 
-  document.querySelectorAll(".reveal").forEach(el => {
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if(entry.isIntersecting){ entry.target.classList.add("visible"); obs.unobserve(entry.target); }
-      });
-    }, {threshold:.12});
-    obs.observe(el);
-  });
+  const revealEls = document.querySelectorAll(".reveal");
+  const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!("IntersectionObserver" in window) || prefersReducedMotion) {
+    revealEls.forEach(el => el.classList.add("visible"));
+  } else {
+    revealEls.forEach(el => {
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); obs.unobserve(entry.target); }
+        });
+      }, {threshold:.12});
+      obs.observe(el);
+    });
+    // Safety net: never leave content permanently invisible if the observer
+    // doesn't fire in time (e.g. page loaded in a background/hidden tab).
+    setTimeout(() => revealEls.forEach(el => el.classList.add("visible")), 2000);
+  }
 });
