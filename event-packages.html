@@ -1,0 +1,83 @@
+
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Event Management Packages</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><img src="logo.png" class="logo" alt="Mamidav International Limited logo">
+<h1>Mamidav International Limited</h1>
+<nav>
+<a href="index.html">Home</a>
+<a href="agriculture.html">Agriculture</a>
+<a href="engineering.html">Engineering</a>
+<a href="services.html">Services</a>
+<a href="investors.html">Investors</a>
+<a href="dashboard.html">Dashboard</a>
+<a href="contact.html">Contact</a>
+<a href="cart.html" class="cart-link">Cart<span class="cart-badge">0</span></a>
+</nav></header>
+
+<div class="page-intro">
+<h2>Event Management Packages</h2>
+<p>Choose a package when you book us as your event manager. Rentals and bakery orders can be added separately from their own pages.</p>
+</div>
+
+<div class="container">
+<p class="placeholder-note">Sample packages — replace names, inclusions and prices with your real offering before launch.</p>
+
+<div class="tiers">
+
+<div class="tier">
+<div class="tier-name">Basic</div>
+<div class="tier-price">₦150,000</div>
+<ul>
+<li>Event day coordination</li>
+<li>Vendor liaison</li>
+<li>Setup & breakdown supervision</li>
+</ul>
+</div>
+
+<div class="tier featured">
+<div class="tier-name">Standard</div>
+<div class="tier-price">₦350,000</div>
+<ul>
+<li>Everything in Basic</li>
+<li>Full event planning from concept</li>
+<li>Decor coordination</li>
+<li>Dedicated event lead</li>
+</ul>
+</div>
+
+<div class="tier">
+<div class="tier-name">Premium</div>
+<div class="tier-price">₦750,000</div>
+<ul>
+<li>Everything in Standard</li>
+<li>Guest management & RSVP tracking</li>
+<li>On-site team for full duration</li>
+<li>Post-event report</li>
+</ul>
+</div>
+
+</div>
+
+<form class="form-card" onsubmit="return submitInquiry(this, 'Event Management Booking')">
+<label>Full Name<input type="text" name="Full Name" required></label>
+<label>Email<input type="email" name="Email" required></label>
+<label>Phone<input type="tel" name="Phone" required></label>
+<label>Package
+<select name="Package">
+<option>Basic</option>
+<option selected>Standard</option>
+<option>Premium</option>
+<option>Not sure yet</option>
+</select>
+</label>
+<label>Event Type<input type="text" name="Event Type" placeholder="e.g. Wedding, Birthday, Corporate"></label>
+<label>Event Date<input type="date" name="Event Date"></label>
+<label>Message<textarea name="Message" placeholder="Tell us more about your event"></textarea></label>
+<button type="submit" class="btn">Book Us</button>
+<p class="form-note">This opens your email app with the details filled in — just hit send.</p>
+</form>
+</div>
+
+<footer style="text-align:center;padding:20px">© 2026 Mamidav International Limited</footer>
+<script src="cart.js"></script>
+</body></html>

@@ -1,0 +1,98 @@
+
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Bakery & Pastries</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><img src="logo.png" class="logo" alt="Mamidav International Limited logo">
+<h1>Mamidav International Limited</h1>
+<nav>
+<a href="index.html">Home</a>
+<a href="agriculture.html">Agriculture</a>
+<a href="engineering.html">Engineering</a>
+<a href="services.html">Services</a>
+<a href="investors.html">Investors</a>
+<a href="dashboard.html">Dashboard</a>
+<a href="contact.html">Contact</a>
+<a href="cart.html" class="cart-link">Cart<span class="cart-badge">0</span></a>
+</nav></header>
+
+<div class="page-intro">
+<h2>Bakery & Pastries</h2>
+<p>Cakes, pastries and catering items made to order. Add what you need to your cart.</p>
+</div>
+
+<div class="container">
+<p class="placeholder-note">Sample catalog — replace items and prices with your real menu before launch. Edit the product cards in bakery.html.</p>
+
+<div class="product-grid">
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Celebration Cake (Small)</h3>
+<p class="desc">Serves up to 15, choice of flavor.</p>
+<p class="price">₦20,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-cake-s" min="1" value="1">
+<button class="btn" id="add-cake-s" onclick="addToCart('cake-s','Celebration Cake (Small)',20000,'Bakery')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Celebration Cake (Large)</h3>
+<p class="desc">Serves up to 40, choice of flavor.</p>
+<p class="price">₦55,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-cake-l" min="1" value="1">
+<button class="btn" id="add-cake-l" onclick="addToCart('cake-l','Celebration Cake (Large)',55000,'Bakery')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Small Chops (Tray of 100)</h3>
+<p class="desc">Assorted puff-puff, spring rolls, samosa.</p>
+<p class="price">₦25,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-chops" min="1" value="1">
+<button class="btn" id="add-chops" onclick="addToCart('chops','Small Chops (Tray of 100)',25000,'Bakery')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Meat Pies (Dozen)</h3>
+<p class="desc">Freshly baked, packed in dozens.</p>
+<p class="price">₦9,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-pie" min="1" value="1">
+<button class="btn" id="add-pie" onclick="addToCart('pie','Meat Pies (Dozen)',9000,'Bakery')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Cupcakes (Dozen)</h3>
+<p class="desc">Assorted flavors and toppings.</p>
+<p class="price">₦12,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-cupcake" min="1" value="1">
+<button class="btn" id="add-cupcake" onclick="addToCart('cupcake','Cupcakes (Dozen)',12000,'Bakery')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Small Chops Package (100 Guests)</h3>
+<p class="desc">Full catering package for events.</p>
+<p class="price">₦180,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-catering" min="1" value="1">
+<button class="btn" id="add-catering" onclick="addToCart('catering','Small Chops Package (100 Guests)',180000,'Bakery')">Add to Cart</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<footer style="text-align:center;padding:20px">© 2026 Mamidav International Limited</footer>
+<script src="cart.js"></script>
+</body></html>

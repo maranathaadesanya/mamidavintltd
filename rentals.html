@@ -1,0 +1,98 @@
+
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Rentals</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><img src="logo.png" class="logo" alt="Mamidav International Limited logo">
+<h1>Mamidav International Limited</h1>
+<nav>
+<a href="index.html">Home</a>
+<a href="agriculture.html">Agriculture</a>
+<a href="engineering.html">Engineering</a>
+<a href="services.html">Services</a>
+<a href="investors.html">Investors</a>
+<a href="dashboard.html">Dashboard</a>
+<a href="contact.html">Contact</a>
+<a href="cart.html" class="cart-link">Cart<span class="cart-badge">0</span></a>
+</nav></header>
+
+<div class="page-intro">
+<h2>Rentals</h2>
+<p>Everything you need for your event, available from our shop. Prices are per day.</p>
+</div>
+
+<div class="container">
+<p class="placeholder-note">Sample catalog — replace items and prices with your real rental inventory before launch. Edit the product cards in rentals.html.</p>
+
+<div class="product-grid">
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Canopy Tent (10x10)</h3>
+<p class="desc">White canopy tent, seats up to 20.</p>
+<p class="price">₦25,000 / day</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-tent" min="1" value="1">
+<button class="btn" id="add-tent" onclick="addToCart('tent','Canopy Tent (10x10)',25000,'Rentals')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Chiavari Chairs (set of 10)</h3>
+<p class="desc">Gold chiavari chairs with cushion.</p>
+<p class="price">₦15,000 / day</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-chairs" min="1" value="1">
+<button class="btn" id="add-chairs" onclick="addToCart('chairs','Chiavari Chairs (set of 10)',15000,'Rentals')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Round Table (seats 8)</h3>
+<p class="desc">Includes white tablecloth.</p>
+<p class="price">₦8,000 / day</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-table" min="1" value="1">
+<button class="btn" id="add-table" onclick="addToCart('table','Round Table (seats 8)',8000,'Rentals')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Sound System (PA + Mics)</h3>
+<p class="desc">Speakers, mixer and two wireless mics.</p>
+<p class="price">₦60,000 / day</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-sound" min="1" value="1">
+<button class="btn" id="add-sound" onclick="addToCart('sound','Sound System (PA + Mics)',60000,'Rentals')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Generator (10KVA)</h3>
+<p class="desc">Quiet-running, fuel not included.</p>
+<p class="price">₦45,000 / day</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-gen" min="1" value="1">
+<button class="btn" id="add-gen" onclick="addToCart('gen','Generator (10KVA)',45000,'Rentals')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Decoration Backdrop</h3>
+<p class="desc">Custom fabric backdrop with stand.</p>
+<p class="price">₦30,000 / day</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-backdrop" min="1" value="1">
+<button class="btn" id="add-backdrop" onclick="addToCart('backdrop','Decoration Backdrop',30000,'Rentals')">Add to Cart</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<footer style="text-align:center;padding:20px">© 2026 Mamidav International Limited</footer>
+<script src="cart.js"></script>
+</body></html>

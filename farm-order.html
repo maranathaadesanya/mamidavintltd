@@ -1,0 +1,109 @@
+
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Order Crops & Animals</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><img src="logo.png" class="logo" alt="Mamidav International Limited logo">
+<h1>Mamidav International Limited</h1>
+<nav>
+<a href="index.html">Home</a>
+<a href="agriculture.html">Agriculture</a>
+<a href="engineering.html">Engineering</a>
+<a href="services.html">Services</a>
+<a href="investors.html">Investors</a>
+<a href="dashboard.html">Dashboard</a>
+<a href="contact.html">Contact</a>
+<a href="cart.html" class="cart-link">Cart<span class="cart-badge">0</span></a>
+</nav></header>
+
+<div class="page-intro">
+<h2>Order Crops & Animals</h2>
+<p>Browse what's currently available from the farm and add items to your cart.</p>
+</div>
+
+<div class="container">
+<p class="placeholder-note">Sample catalog — replace items and prices with real farm inventory before launch. Edit the product cards in farm-order.html.</p>
+
+<div class="product-grid">
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Live Piglet</h3>
+<p class="desc">Healthy weaned piglet, ready for rearing.</p>
+<p class="price">₦45,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-piglet" min="1" value="1">
+<button class="btn" id="add-piglet" onclick="addToCart('piglet','Live Piglet',45000,'Farm')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Matured Pig</h3>
+<p class="desc">Ready for slaughter or breeding.</p>
+<p class="price">₦120,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-pig" min="1" value="1">
+<button class="btn" id="add-pig" onclick="addToCart('pig','Matured Pig',120000,'Farm')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Maize (50kg bag)</h3>
+<p class="desc">Freshly harvested maize.</p>
+<p class="price">₦35,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-maize" min="1" value="1">
+<button class="btn" id="add-maize" onclick="addToCart('maize','Maize (50kg bag)',35000,'Farm')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Cassava Tubers (bag)</h3>
+<p class="desc">Fresh cassava, ideal for processing.</p>
+<p class="price">₦20,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-cassava" min="1" value="1">
+<button class="btn" id="add-cassava" onclick="addToCart('cassava','Cassava Tubers (bag)',20000,'Farm')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Garri (25kg bag)</h3>
+<p class="desc">Processed at our own facility.</p>
+<p class="price">₦18,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-garri" min="1" value="1">
+<button class="btn" id="add-garri" onclick="addToCart('garri','Garri (25kg bag)',18000,'Farm')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Frozen Chicken (crate)</h3>
+<p class="desc">Chilled and ready for delivery.</p>
+<p class="price">₦40,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-chicken" min="1" value="1">
+<button class="btn" id="add-chicken" onclick="addToCart('chicken','Frozen Chicken (crate)',40000,'Farm')">Add to Cart</button>
+</div>
+</div>
+
+<div class="product-card">
+<div class="thumb">Photo</div>
+<h3>Frozen Fish (carton)</h3>
+<p class="desc">Assorted frozen fish, bulk carton.</p>
+<p class="price">₦30,000</p>
+<div class="add-row">
+<input type="number" class="qty-input" id="qty-fish" min="1" value="1">
+<button class="btn" id="add-fish" onclick="addToCart('fish','Frozen Fish (carton)',30000,'Farm')">Add to Cart</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<footer style="text-align:center;padding:20px">© 2026 Mamidav International Limited</footer>
+<script src="cart.js"></script>
+</body></html>
