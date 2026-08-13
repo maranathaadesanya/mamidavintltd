@@ -379,60 +379,75 @@ async function resendSignupCode() {
 
 async function doSignup(form) {
   const errEl = document.getElementById("form-error");
+
   if (errEl) {
     errEl.textContent = "";
     errEl.style.color = "#a33";
   }
-  
+
   const formData = formEntries(form);
-  
-  // Validate password match
+
+  // Check passwords
   if (formData.password !== formData.confirm_password) {
     hideVerificationPanel();
-    if (errEl) errEl.textContent = "Passwords do not match.";
-    return false;
-  }
-  
-  // Validate required fields
-  if (!formData.full_name || !formData.email || !formData.password) {
-    hideVerificationPanel();
-    if (errEl) errEl.textContent = "Please fill in all required fields.";
+
+    if (errEl) {
+      errEl.textContent = "Passwords do not match.";
+    }
+
     return false;
   }
 
+  // Check required fields
+  if (!formData.full_name || !formData.email || !formData.password) {
+    hideVerificationPanel();
+
+    if (errEl) {
+      errEl.textContent = "Please fill in all required fields.";
+    }
+
+    return false;
+  }
+
+  // Store signup information temporarily
   pendingSignup = {
     full_name: formData.full_name,
     email: formData.email,
-    phone: formData.phone,
-    password: formData.password,
+    phone: formData.phone || "",
+    password: formData.password
   };
 
+  // Ask PHP to generate and send verification code
   const { ok, data } = await apiPost("signup.php", {
     action: "send_code",
-    full_name: formData.full_name,
-    email: formData.email,
-    phone: formData.phone,
-    password: formData.password,
+    full_name: pendingSignup.full_name,
+    email: pendingSignup.email,
+    phone: pendingSignup.phone,
+    password: pendingSignup.password
   });
-  
+
+  // Email/code could not be sent
   if (!ok || !data || data.success !== true) {
-    // Error sending code - keep verification panel hidden
     hideVerificationPanel();
+
     if (errEl) {
-      errEl.textContent = data.error || "Unable to send verification code. Please try again.";
+      errEl.textContent =
+        (data && data.error) ||
+        "Unable to send verification code. Please try again.";
       errEl.style.color = "#a33";
     }
-    pendingSignup = null;
+
     return false;
   }
 
-  // Success - show verification panel
+  // Verification email successfully sent
   if (errEl) {
-    errEl.textContent = data.message || "Verification code sent to your email.";
-    errEl.style.color = "#0a4d32";
+    errEl.textContent = "";
   }
-  showVerificationPanel(formData.email);
-return false;
+
+  showVerificationPanel(pendingSignup.email);
+
+  return false;
 }
 
 async function doVerifySignupCode(form) {
