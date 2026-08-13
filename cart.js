@@ -327,7 +327,7 @@ function placeOrder() {
 
   const next =
     encodeURIComponent(
-      "payments.html"
+      "cart.html"
     );
 
   window.location.href =
@@ -711,15 +711,35 @@ async function mergeGuestCartIfAny() {
     guestItems.length > 0
   ) {
 
-    await apiPost(
+    const {
+      ok,
+      data
+    } = await apiPost(
       "cart_merge.php",
       {
         items: guestItems
       }
     );
 
+    if (!ok || !data || data.success !== true) {
+      throw new Error("Guest cart merge was not accepted by the server.");
+    }
+
     saveLocalCart([]);
+    await loadCart();
   }
+}
+
+function approvedPostAuthDestination() {
+  const next = new URLSearchParams(window.location.search).get("next");
+  const allowedDestinations = new Set([
+    "cart.html",
+    "payments.html",
+    "dashboard.html",
+    "profile.html"
+  ]);
+
+  return allowedDestinations.has(next) ? next : "index.html";
 }
 
 // ---------- Form helpers ----------
@@ -1803,11 +1823,11 @@ document.addEventListener(
 
     if (
       signupLink &&
-      next === "payments.html"
+      (next === "cart.html" || next === "payments.html")
     ) {
 
       signupLink.href =
-        "signup.html?next=payments.html";
+        "signup.html?next=" + encodeURIComponent(next);
     }
 
     // ----------------------------------------

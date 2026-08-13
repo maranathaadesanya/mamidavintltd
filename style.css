@@ -68,13 +68,13 @@ header{
 }
 .header-inner{
   width:min(1160px,calc(100% - 40px));margin:0 auto;
-  display:flex;align-items:center;gap:clamp(12px,3vw,25px);flex-wrap:nowrap;overflow:hidden
+  display:flex;align-items:center;gap:clamp(12px,3vw,25px);flex-wrap:nowrap;overflow:visible;position:relative;z-index:101
 }
 .logo{width:clamp(48px,12vw,64px);height:clamp(48px,12vw,64px);object-fit:contain;padding:0;background:transparent;mix-blend-mode:normal;filter:none;opacity:1;border-radius:50%;flex-shrink:0}
 .brand-title{display:flex;flex-direction:column;line-height:1;white-space:nowrap;flex-shrink:1;min-width:0}
 .brand-title strong{font-family:"Playfair Display",Georgia,serif;font-size:clamp(14px,4vw,20px);letter-spacing:.01em}
 .brand-title small{font-size:8px;letter-spacing:.17em;color:#8b6c70;margin-top:5px}
-nav{margin-left:auto;display:flex;align-items:center;gap:3px;flex-shrink:0}
+nav{margin-left:auto;display:flex;align-items:center;gap:3px;flex-shrink:0;position:relative;z-index:102}
 nav a{
   color:var(--burgundy);margin:0;padding:9px 11px;border-radius:8px;
   font-size:clamp(11px,2.5vw,12px);font-weight:700;transition:.2s ease;white-space:nowrap
@@ -411,9 +411,9 @@ body{overflow-x:hidden}
 }
 
 /* Account dropdown in header (rendered by JS) */
-.auth-nav{margin-left:12px;position:relative;display:inline-block}
+.auth-nav{margin-left:12px;position:relative;display:inline-block;z-index:103}
 .auth-nav .account-btn{background:transparent;border:1px solid transparent;padding:8px 10px;border-radius:8px;color:var(--burgundy);font-weight:800}
-.auth-nav .account-menu{position:absolute;right:0;top:calc(100% + 8px);background:white;border:1px solid var(--line);border-radius:10px;padding:8px;min-width:160px;box-shadow:0 12px 30px rgba(62,3,3,.12);z-index:120}
+.auth-nav .account-menu{position:absolute;right:0;top:calc(100% + 8px);background:white;border:1px solid var(--line);border-radius:10px;padding:8px;min-width:160px;box-shadow:0 12px 30px rgba(62,3,3,.12);z-index:104}
 .auth-nav .account-menu a{display:block;padding:8px 10px;color:var(--burgundy);font-weight:700;border-radius:6px}
 .auth-nav .account-menu a:hover{background:var(--pink-soft)}
 
