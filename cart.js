@@ -323,7 +323,7 @@ async function resendSignupCode() {
   // Re-enable button
   if (resendBtn) resendBtn.disabled = false;
   
-  if (!ok) {
+  if (!ok || !res || res.success !== true) {
     if (verifyErrorEl) {
       verifyErrorEl.textContent = res.error || "Unable to resend the verification code. Please try again.";
     }
@@ -374,7 +374,7 @@ async function doSignup(form) {
     password: data.password,
   });
   
-  if (!ok) {
+  if (!ok || !res || res.success !== true) {
     // Error sending code - keep verification panel hidden
     if (errEl) {
       errEl.textContent = res.error || "Unable to send verification code. Please try again.";
@@ -410,7 +410,7 @@ async function doVerifySignupCode(form) {
     email,
     verification_code: code,
   });
-  if (!verifyRes.ok) {
+  if (!verifyRes.ok || !verifyRes.data || verifyRes.data.success !== true) {
     if (errEl) errEl.textContent = verifyRes.data.error || "Invalid verification code.";
     return false;
   }
@@ -423,7 +423,7 @@ async function doVerifySignupCode(form) {
     password: pendingSignup ? pendingSignup.password : "",
     verification_code: code,
   });
-  if (!finalizeRes.ok) {
+  if (!finalizeRes.ok || !finalizeRes.data || finalizeRes.data.success !== true) {
     if (errEl) errEl.textContent = finalizeRes.data.error || "Unable to create your account.";
     return false;
   }
@@ -445,15 +445,10 @@ async function doVerifySignupCode(form) {
   // Redirect after brief delay
   setTimeout(() => {
     try {
-      const params = new URLSearchParams(window.location.search);
-      const next = params.get('next');
-      if (next && !next.includes('://')) {
-        window.location.href = next;
-      } else {
-        window.location.href = "dashboard.html";
-      }
-    } catch (e) {
-      window.location.href = "dashboard.html";
+    const next = new URLSearchParams(window.location.search).get('next');
+    window.location.href = next === 'payments.html' ? 'payments.html' : 'index.html';
+  } catch (e) {
+      window.location.href = "index.html";
     }
   }, 1500);
   
@@ -543,6 +538,12 @@ function renderProfilePage() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const signupLink = document.getElementById("signup-link");
+  const next = new URLSearchParams(window.location.search).get('next');
+  if (signupLink && next === 'payments.html') {
+    signupLink.href = 'signup.html?next=payments.html';
+  }
+
   await checkSession();
   if (document.body.dataset.requireLogin === "true" && !currentUser) {
     window.location.href = "login.html";

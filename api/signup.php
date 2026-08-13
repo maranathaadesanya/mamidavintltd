@@ -84,6 +84,8 @@ if ($action === 'send_code') {
         exit;
     }
 
+    log_signup_diagnostic('signup_validation_passed', $action);
+
     $code = generate_verification_code();
     $hash = password_hash($password, PASSWORD_DEFAULT);
     $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
@@ -93,12 +95,16 @@ if ($action === 'send_code') {
         'ON DUPLICATE KEY UPDATE full_name = VALUES(full_name), phone = VALUES(phone), password_hash = VALUES(password_hash), verification_code = VALUES(verification_code), expires_at = VALUES(expires_at), created_at = NOW(), verified_at = NULL'
     );
     $stmt->execute([$email, $fullName, $phone, $hash, $code, $expiresAt]);
+    log_signup_diagnostic('signup_verification_record_created', $action);
 
     try {
         log_signup_diagnostic('signup_verification_email_send_attempted', $action);
         $mailBody = "Hello {$fullName},\n\nYour Mamidav verification code is: {$code}\n\nThis code is valid for 15 minutes. If you did not request this signup, you can ignore this email.\n";
-        send_mamidav_email($email, 'Your Mamidav verification code', $mailBody);
-        log_signup_diagnostic('signup_verification_email_send_succeeded', $action);
+        $emailAccepted = send_mamidav_email($email, 'Your Mamidav verification code', $mailBody);
+        if ($emailAccepted !== true) {
+            throw new RuntimeException('PHPMailer did not accept the verification message for sending.');
+        }
+        log_signup_diagnostic('verification_email_accepted_by_smtp', $action);
     } catch (Throwable $e) {
         try {
             $cleanup = $pdo->prepare('DELETE FROM email_verifications WHERE email = ? AND verification_code = ?');
@@ -119,11 +125,13 @@ if ($action === 'send_code') {
             'error' => sanitize_mail_error_for_log($e->getMessage()),
         ]));
         http_response_code(500);
+        log_signup_diagnostic('signup_response_sent', $action, 'email_send_failed');
         echo json_encode(['error' => 'We could not send the verification email right now. Please try again later.']);
         exit;
     }
 
-    echo json_encode(['success' => true, 'message' => 'A verification code has been sent to your email.']);
+    log_signup_diagnostic('signup_response_sent', $action, 'email_send_succeeded');
+    echo json_encode(['success' => true, 'message' => 'Verification code sent successfully.']);
     exit;
 }
 
@@ -141,6 +149,7 @@ if ($action === 'verify_code') {
     $verification = $stmt->fetch();
 
     if (!$verification) {
+        log_signup_diagnostic('signup_validation_failed', $action, 'invalid_or_expired_code');
         http_response_code(400);
         echo json_encode(['error' => 'The verification code is invalid or has expired. Please request a new code.']);
         exit;
@@ -149,6 +158,8 @@ if ($action === 'verify_code') {
     $mark = $pdo->prepare('UPDATE email_verifications SET verified_at = NOW() WHERE id = ?');
     $mark->execute([$verification['id']]);
 
+    log_signup_diagnostic('signup_verification_code_validated', $action);
+    log_signup_diagnostic('signup_response_sent', $action, 'code_validated');
     echo json_encode(['success' => true, 'message' => 'Email verified successfully.']);
     exit;
 }
@@ -207,6 +218,8 @@ if ($pending['verified_at'] === null) {
     $mark->execute([$pending['id']]);
 }
 
+log_signup_diagnostic('signup_verification_code_validated', $action);
+
 $hash = $pending['password_hash'];
 if ($hash === '' || !password_get_info($hash)['algo']) {
     $hash = password_hash($password, PASSWORD_DEFAULT);
@@ -221,4 +234,5 @@ $stmt->execute([$email]);
 $_SESSION['user_id'] = (int) $pdo->lastInsertId();
 session_regenerate_id(true);
 
-echo json_encode(['full_name' => $fullName, 'email' => $email, 'phone' => $phone]);
+log_signup_diagnostic('signup_response_sent', $action, 'account_created');
+echo json_encode(['success' => true, 'full_name' => $fullName, 'email' => $email, 'phone' => $phone]);
