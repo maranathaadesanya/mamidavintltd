@@ -420,11 +420,24 @@ async function doSignup(form) {
     errEl.style.color = "#0a4d32";
   }
   const verificationPanel = document.getElementById("signup-verify-panel");
-  console.log("SEND CODE SUCCESS", res);
-  console.log("VERIFICATION PANEL", verificationPanel);
+  console.log("SEND CODE RESPONSE:", res);
+  console.log("VERIFICATION ELEMENT:", verificationPanel);
   if (!verificationPanel) {
     console.error("Verification panel not found");
     return false;
+  }
+  console.log("VERIFICATION ELEMENT DISPLAY:", getComputedStyle(verificationPanel).display);
+  console.log("VERIFICATION ELEMENT VISIBILITY:", getComputedStyle(verificationPanel).visibility);
+  console.log("VERIFICATION ELEMENT HIDDEN:", verificationPanel.hidden);
+
+  // Temporary explicit reveal diagnostics for the actual verification container.
+  verificationPanel.hidden = false;
+  verificationPanel.classList.remove("hidden");
+  verificationPanel.style.display = "";
+  verificationPanel.style.visibility = "visible";
+  verificationPanel.style.opacity = "1";
+  if (verificationPanel.parentElement && verificationPanel.parentElement.hidden) {
+    verificationPanel.parentElement.hidden = false;
   }
   showVerificationPanel(data.email);
   return false;
