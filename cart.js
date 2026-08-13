@@ -288,14 +288,30 @@ function showVerificationPanel(email) {
   const verifyPanel = document.getElementById("signup-verify-panel");
   const verifyHidden = document.getElementById("verify-email-hidden");
   const verifyMessage = document.getElementById("verify-message");
+  const verifyErrorEl = document.getElementById("form-error-verify");
+  const verifyInput = document.querySelector("#verify-form input[name='code']");
+  
   if (signupForm) signupForm.hidden = true;
   if (verifyPanel) verifyPanel.hidden = false;
   if (verifyHidden) verifyHidden.value = email;
-  if (verifyMessage) verifyMessage.textContent = `A 6-digit verification code was sent to ${email}.`;
+  if (verifyMessage) {
+    verifyMessage.textContent = `A 6-digit verification code was sent to ${email}.`;
+    verifyMessage.style.color = "#0a4d32";
+  }
+  if (verifyErrorEl) verifyErrorEl.textContent = "";
+  if (verifyInput) verifyInput.focus();
 }
 
 async function resendSignupCode() {
   if (!pendingSignup) return;
+  
+  const verifyMsg = document.getElementById("verify-message");
+  const verifyErrorEl = document.getElementById("form-error-verify");
+  
+  // Disable button during request
+  const resendBtn = document.getElementById("resend-code-btn");
+  if (resendBtn) resendBtn.disabled = true;
+  
   const { ok, data: res } = await apiPost("signup.php", {
     action: "send_code",
     full_name: pendingSignup.full_name,
@@ -303,20 +319,23 @@ async function resendSignupCode() {
     phone: pendingSignup.phone,
     password: pendingSignup.password,
   });
-  const msgEl = document.getElementById("form-error");
-  const verifyMsg = document.getElementById("verify-message");
+  
+  // Re-enable button
+  if (resendBtn) resendBtn.disabled = false;
+  
   if (!ok) {
-    if (msgEl) {
-      msgEl.textContent = res.error || "Unable to resend the verification code.";
-      msgEl.style.color = "#a33";
+    if (verifyErrorEl) {
+      verifyErrorEl.textContent = res.error || "Unable to resend the verification code. Please try again.";
     }
     return;
   }
-  if (verifyMsg) verifyMsg.textContent = `A new code was sent to ${pendingSignup.email}.`;
-  if (msgEl) {
-    msgEl.textContent = "";
-    msgEl.style.color = "#a33";
+  
+  // Success message
+  if (verifyMsg) {
+    verifyMsg.textContent = `A new verification code was sent to ${pendingSignup.email}.`;
+    verifyMsg.style.color = "#0a4d32";
   }
+  if (verifyErrorEl) verifyErrorEl.textContent = "";
 }
 
 async function doSignup(form) {
@@ -325,9 +344,18 @@ async function doSignup(form) {
     errEl.textContent = "";
     errEl.style.color = "#a33";
   }
+  
   const data = formEntries(form);
+  
+  // Validate password match
   if (data.password !== data.confirm_password) {
     if (errEl) errEl.textContent = "Passwords do not match.";
+    return false;
+  }
+  
+  // Validate required fields
+  if (!data.full_name || !data.email || !data.password) {
+    if (errEl) errEl.textContent = "Please fill in all required fields.";
     return false;
   }
 
@@ -345,14 +373,20 @@ async function doSignup(form) {
     phone: data.phone,
     password: data.password,
   });
+  
   if (!ok) {
-    if (errEl) errEl.textContent = res.error || "Something went wrong. Please try again.";
+    // Error sending code - keep verification panel hidden
+    if (errEl) {
+      errEl.textContent = res.error || "Unable to send verification code. Please try again.";
+      errEl.style.color = "#a33";
+    }
     pendingSignup = null;
     return false;
   }
 
+  // Success - show verification panel
   if (errEl) {
-    errEl.textContent = res.message || "Verification code sent.";
+    errEl.textContent = res.message || "Verification code sent to your email.";
     errEl.style.color = "#0a4d32";
   }
   showVerificationPanel(data.email);
@@ -395,18 +429,34 @@ async function doVerifySignupCode(form) {
   }
 
   currentUser = finalizeRes.data;
+  pendingSignup = null;
   await mergeGuestCartIfAny();
-  try {
-    const params = new URLSearchParams(window.location.search);
-    const next = params.get('next');
-    if (next && !next.includes('://')) {
-      window.location.href = next;
-    } else {
+  
+  // Show success message
+  if (errEl) {
+    errEl.textContent = "";
+  }
+  const verifyMsg = document.getElementById("verify-message");
+  if (verifyMsg) {
+    verifyMsg.textContent = "✓ Signup successful! Welcome to Mamidav International Limited.";
+    verifyMsg.style.color = "#0a4d32";
+  }
+  
+  // Redirect after brief delay
+  setTimeout(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get('next');
+      if (next && !next.includes('://')) {
+        window.location.href = next;
+      } else {
+        window.location.href = "dashboard.html";
+      }
+    } catch (e) {
       window.location.href = "dashboard.html";
     }
-  } catch (e) {
-    window.location.href = "dashboard.html";
-  }
+  }, 1500);
+  
   return false;
 }
 
