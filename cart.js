@@ -283,16 +283,26 @@ function formEntries(form) {
 
 let pendingSignup = null;
 
+function setVerificationPanelVisible(visible) {
+  const verifyPanel = document.getElementById("signup-verify-panel");
+  if (!verifyPanel) return;
+  verifyPanel.hidden = !visible;
+  verifyPanel.setAttribute("aria-hidden", String(!visible));
+}
+
+function hideVerificationPanel() {
+  setVerificationPanelVisible(false);
+}
+
 function showVerificationPanel(email) {
   const signupForm = document.getElementById("signup-form");
-  const verifyPanel = document.getElementById("signup-verify-panel");
   const verifyHidden = document.getElementById("verify-email-hidden");
   const verifyMessage = document.getElementById("verify-message");
   const verifyErrorEl = document.getElementById("form-error-verify");
   const verifyInput = document.querySelector("#verify-form input[name='code']");
   
   if (signupForm) signupForm.hidden = true;
-  if (verifyPanel) verifyPanel.hidden = false;
+  setVerificationPanelVisible(true);
   if (verifyHidden) verifyHidden.value = email;
   if (verifyMessage) {
     verifyMessage.textContent = `A 6-digit verification code was sent to ${email}.`;
@@ -349,12 +359,14 @@ async function doSignup(form) {
   
   // Validate password match
   if (data.password !== data.confirm_password) {
+    hideVerificationPanel();
     if (errEl) errEl.textContent = "Passwords do not match.";
     return false;
   }
   
   // Validate required fields
   if (!data.full_name || !data.email || !data.password) {
+    hideVerificationPanel();
     if (errEl) errEl.textContent = "Please fill in all required fields.";
     return false;
   }
@@ -376,6 +388,7 @@ async function doSignup(form) {
   
   if (!ok || !res || res.success !== true) {
     // Error sending code - keep verification panel hidden
+    hideVerificationPanel();
     if (errEl) {
       errEl.textContent = res.error || "Unable to send verification code. Please try again.";
       errEl.style.color = "#a33";
@@ -462,9 +475,18 @@ if (resendCodeBtn) {
 
 const signupForm = document.getElementById("signup-form");
 if (signupForm) {
+  hideVerificationPanel();
   signupForm.addEventListener("submit", (event) => {
     event.preventDefault();
     void doSignup(signupForm);
+  });
+}
+
+const verifyForm = document.getElementById("verify-form");
+if (verifyForm) {
+  verifyForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    void doVerifySignupCode(verifyForm);
   });
 }
 

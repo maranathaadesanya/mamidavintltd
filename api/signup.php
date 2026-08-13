@@ -43,6 +43,29 @@ function log_signup_diagnostic($event, $action, $category = null) {
     error_log(json_encode($entry));
 }
 
+function sanitize_database_error_for_log($message) {
+    $message = preg_replace('/(password|pwd|db_pass|db_user|username|smtp_pass|smtp_user)\s*(?:=|:|is)?\s*[^\s,;]+/i', '$1=[redacted]', (string) $message);
+    return substr(preg_replace('/[\r\n]+/', ' ', $message), 0, 500);
+}
+
+function categorize_database_error($message) {
+    if (preg_match('/doesn.t exist|base table|unknown column|syntax/i', $message)) return 'schema';
+    if (preg_match('/duplicate|integrity constraint|foreign key/i', $message)) return 'constraint';
+    if (preg_match('/connect|connection|server has gone away/i', $message)) return 'connection';
+    if (preg_match('/lock wait|deadlock|timeout/i', $message)) return 'timeout';
+    return 'database';
+}
+
+function log_signup_operation_failure($event, $action, $category, $message) {
+    error_log(json_encode([
+        'event' => $event,
+        'timestamp' => gmdate('c'),
+        'action' => $action,
+        'category' => $category,
+        'error' => sanitize_database_error_for_log($message),
+    ]));
+}
+
 $input = json_input();
 $action = strtolower(trim((string) ($input['action'] ?? 'create')));
 log_signup_diagnostic('signup_request_received', $action);
@@ -86,15 +109,47 @@ if ($action === 'send_code') {
 
     log_signup_diagnostic('signup_validation_passed', $action);
 
-    $code = generate_verification_code();
-    $hash = password_hash($password, PASSWORD_DEFAULT);
+    log_signup_diagnostic('signup_code_generation_started', $action);
+    try {
+        $code = generate_verification_code();
+    } catch (Throwable $e) {
+        log_signup_operation_failure('signup_code_generation_failed', $action, 'code_generation', $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['error' => 'We could not prepare the verification request right now. Please try again later.']);
+        exit;
+    }
+    log_signup_diagnostic('signup_code_generation_completed', $action);
+
+    log_signup_diagnostic('signup_password_hashing_started', $action);
+    try {
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        if ($hash === false) {
+            throw new RuntimeException('Password hashing did not return a hash.');
+        }
+    } catch (Throwable $e) {
+        log_signup_operation_failure('signup_password_hashing_failed', $action, 'password_hashing', $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['error' => 'We could not prepare the verification request right now. Please try again later.']);
+        exit;
+    }
+    log_signup_diagnostic('signup_password_hashing_completed', $action);
+
     $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
 
-    $stmt = $pdo->prepare(
-        'INSERT INTO email_verifications (email, full_name, phone, password_hash, verification_code, expires_at, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW()) ' .
-        'ON DUPLICATE KEY UPDATE full_name = VALUES(full_name), phone = VALUES(phone), password_hash = VALUES(password_hash), verification_code = VALUES(verification_code), expires_at = VALUES(expires_at), created_at = NOW(), verified_at = NULL'
-    );
-    $stmt->execute([$email, $fullName, $phone, $hash, $code, $expiresAt]);
+    log_signup_diagnostic('signup_verification_db_insert_started', $action);
+    try {
+        $stmt = $pdo->prepare(
+            'INSERT INTO email_verifications (email, full_name, phone, password_hash, verification_code, expires_at, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW()) ' .
+            'ON DUPLICATE KEY UPDATE full_name = VALUES(full_name), phone = VALUES(phone), password_hash = VALUES(password_hash), verification_code = VALUES(verification_code), expires_at = VALUES(expires_at), created_at = NOW(), verified_at = NULL'
+        );
+        $stmt->execute([$email, $fullName, $phone, $hash, $code, $expiresAt]);
+    } catch (Throwable $e) {
+        log_signup_operation_failure('signup_verification_db_insert_failed', $action, categorize_database_error($e->getMessage()), $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['error' => 'We could not prepare the verification request right now. Please try again later.']);
+        exit;
+    }
+    log_signup_diagnostic('signup_verification_db_insert_completed', $action);
     log_signup_diagnostic('signup_verification_record_created', $action);
 
     try {
