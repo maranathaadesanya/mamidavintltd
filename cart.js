@@ -285,30 +285,27 @@ let pendingSignup = null;
 
 function setVerificationPanelVisible(visible) {
   const verifyPanel = document.getElementById("signup-verify-panel");
+
   if (!verifyPanel) {
     console.error("Verification panel not found");
     return false;
   }
 
   if (visible) {
-    verifyPanel.hidden = false;
+    verifyPanel.removeAttribute("hidden");
     verifyPanel.setAttribute("aria-hidden", "false");
-    verifyPanel.style.removeProperty("display");
+    verifyPanel.style.display = "flex";
   } else {
-    verifyPanel.hidden = true;
+    verifyPanel.setAttribute("hidden", "");
     verifyPanel.setAttribute("aria-hidden", "true");
     verifyPanel.style.display = "none";
   }
+
   return true;
 }
 
 function hideVerificationPanel() {
   setVerificationPanelVisible(false);
-}
-
-function approvedPostAuthDestination() {
-  const next = new URLSearchParams(window.location.search).get("next");
-  return next === "payments.html" ? "payments.html" : "index.html";
 }
 
 function showVerificationPanel(email) {
@@ -317,18 +314,33 @@ function showVerificationPanel(email) {
   const verifyMessage = document.getElementById("verify-message");
   const verifyErrorEl = document.getElementById("form-error-verify");
   const verifyInput = document.querySelector("#verify-form input[name='code']");
-  
-  if (signupForm) signupForm.hidden = true;
-  if (!setVerificationPanelVisible(true)) return;
-  if (verifyHidden) verifyHidden.value = email;
+
+  if (signupForm) {
+    signupForm.setAttribute("hidden", "");
+  }
+
+  if (!setVerificationPanelVisible(true)) {
+    return;
+  }
+
+  if (verifyHidden) {
+    verifyHidden.value = email;
+  }
+
   if (verifyMessage) {
-    verifyMessage.textContent = `A 6-digit verification code was sent to ${email}.`;
+    verifyMessage.textContent =
+      `A 6-digit verification code was sent to ${email}.`;
     verifyMessage.style.color = "#0a4d32";
   }
-  if (verifyErrorEl) verifyErrorEl.textContent = "";
-  if (verifyInput) verifyInput.focus();
-}
 
+  if (verifyErrorEl) {
+    verifyErrorEl.textContent = "";
+  }
+
+  if (verifyInput) {
+    verifyInput.focus();
+  }
+}
 async function resendSignupCode() {
   if (!pendingSignup) return;
   
@@ -419,29 +431,8 @@ async function doSignup(form) {
     errEl.textContent = data.message || "Verification code sent to your email.";
     errEl.style.color = "#0a4d32";
   }
-  const verificationPanel = document.getElementById("signup-verify-panel");
-  console.log("SEND CODE RESPONSE:", data);
-  console.log("VERIFICATION ELEMENT:", verificationPanel);
-  console.log("VERIFICATION ELEMENT DISPLAY:", verificationPanel ? getComputedStyle(verificationPanel).display : "NOT FOUND");
-  console.log("VERIFICATION ELEMENT VISIBILITY:", verificationPanel ? getComputedStyle(verificationPanel).visibility : "NOT FOUND");
-  console.log("VERIFICATION ELEMENT HIDDEN:", verificationPanel ? verificationPanel.hidden : "NOT FOUND");
-  console.log("VERIFICATION ELEMENT ID/CLASS:", verificationPanel ? { id: verificationPanel.id, className: verificationPanel.className } : "NOT FOUND");
-  if (!verificationPanel) {
-    console.error("Verification panel not found");
-    return false;
-  }
-
-  // Temporary explicit reveal diagnostics for the actual verification container.
-  verificationPanel.hidden = false;
-  verificationPanel.classList.remove("hidden");
-  verificationPanel.style.display = "";
-  verificationPanel.style.visibility = "visible";
-  verificationPanel.style.opacity = "1";
-  if (verificationPanel.parentElement && verificationPanel.parentElement.hidden) {
-    verificationPanel.parentElement.hidden = false;
-  }
   showVerificationPanel(formData.email);
-  return false;
+return false;
 }
 
 async function doVerifySignupCode(form) {
