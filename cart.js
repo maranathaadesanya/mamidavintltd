@@ -372,42 +372,42 @@ async function doSignup(form) {
     errEl.style.color = "#a33";
   }
   
-  const data = formEntries(form);
+  const formData = formEntries(form);
   
   // Validate password match
-  if (data.password !== data.confirm_password) {
+  if (formData.password !== formData.confirm_password) {
     hideVerificationPanel();
     if (errEl) errEl.textContent = "Passwords do not match.";
     return false;
   }
   
   // Validate required fields
-  if (!data.full_name || !data.email || !data.password) {
+  if (!formData.full_name || !formData.email || !formData.password) {
     hideVerificationPanel();
     if (errEl) errEl.textContent = "Please fill in all required fields.";
     return false;
   }
 
   pendingSignup = {
-    full_name: data.full_name,
-    email: data.email,
-    phone: data.phone,
-    password: data.password,
+    full_name: formData.full_name,
+    email: formData.email,
+    phone: formData.phone,
+    password: formData.password,
   };
 
-  const { ok, data: res } = await apiPost("signup.php", {
+  const { ok, data } = await apiPost("signup.php", {
     action: "send_code",
-    full_name: data.full_name,
-    email: data.email,
-    phone: data.phone,
-    password: data.password,
+    full_name: formData.full_name,
+    email: formData.email,
+    phone: formData.phone,
+    password: formData.password,
   });
   
-  if (!ok || !res || res.success !== true) {
+  if (!ok || !data || data.success !== true) {
     // Error sending code - keep verification panel hidden
     hideVerificationPanel();
     if (errEl) {
-      errEl.textContent = res.error || "Unable to send verification code. Please try again.";
+      errEl.textContent = data.error || "Unable to send verification code. Please try again.";
       errEl.style.color = "#a33";
     }
     pendingSignup = null;
@@ -416,19 +416,20 @@ async function doSignup(form) {
 
   // Success - show verification panel
   if (errEl) {
-    errEl.textContent = res.message || "Verification code sent to your email.";
+    errEl.textContent = data.message || "Verification code sent to your email.";
     errEl.style.color = "#0a4d32";
   }
   const verificationPanel = document.getElementById("signup-verify-panel");
-  console.log("SEND CODE RESPONSE:", res);
+  console.log("SEND CODE RESPONSE:", data);
   console.log("VERIFICATION ELEMENT:", verificationPanel);
+  console.log("VERIFICATION ELEMENT DISPLAY:", verificationPanel ? getComputedStyle(verificationPanel).display : "NOT FOUND");
+  console.log("VERIFICATION ELEMENT VISIBILITY:", verificationPanel ? getComputedStyle(verificationPanel).visibility : "NOT FOUND");
+  console.log("VERIFICATION ELEMENT HIDDEN:", verificationPanel ? verificationPanel.hidden : "NOT FOUND");
+  console.log("VERIFICATION ELEMENT ID/CLASS:", verificationPanel ? { id: verificationPanel.id, className: verificationPanel.className } : "NOT FOUND");
   if (!verificationPanel) {
     console.error("Verification panel not found");
     return false;
   }
-  console.log("VERIFICATION ELEMENT DISPLAY:", getComputedStyle(verificationPanel).display);
-  console.log("VERIFICATION ELEMENT VISIBILITY:", getComputedStyle(verificationPanel).visibility);
-  console.log("VERIFICATION ELEMENT HIDDEN:", verificationPanel.hidden);
 
   // Temporary explicit reveal diagnostics for the actual verification container.
   verificationPanel.hidden = false;
@@ -439,7 +440,7 @@ async function doSignup(form) {
   if (verificationPanel.parentElement && verificationPanel.parentElement.hidden) {
     verificationPanel.parentElement.hidden = false;
   }
-  showVerificationPanel(data.email);
+  showVerificationPanel(formData.email);
   return false;
 }
 
