@@ -6,6 +6,31 @@ function generate_verification_code() {
     return str_pad((string) random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
 }
 
+function mask_email_for_log($email) {
+    $parts = explode('@', $email, 2);
+    if (count($parts) !== 2) {
+        return '[invalid-recipient]';
+    }
+
+    $localPart = $parts[0];
+    return substr($localPart, 0, 1) . '***@' . $parts[1];
+}
+
+function categorize_mail_error($message) {
+    if (preg_match('/connect|connection|network|dns|host/i', $message)) return 'connection';
+    if (preg_match('/tls|starttls|ssl|crypto/i', $message)) return 'tls';
+    if (preg_match('/auth|login|credential/i', $message)) return 'authentication';
+    if (preg_match('/sender|from address|setfrom/i', $message)) return 'sender';
+    if (preg_match('/recipient|addaddress|invalid address/i', $message)) return 'recipient';
+    return 'phpmailer';
+}
+
+function sanitize_mail_error_for_log($message) {
+    $message = preg_replace('/(password|smtp_pass|username|smtp_user)\s*(?:=|:|is)?\s*[^\s,;]+/i', '$1=[redacted]', (string) $message);
+    $message = preg_replace('/\b\d{6}\b/', '[redacted-code]', $message);
+    return substr(preg_replace('/[\r\n]+/', ' ', $message), 0, 500);
+}
+
 $input = json_input();
 $action = strtolower(trim((string) ($input['action'] ?? 'create')));
 $fullName = trim((string) ($input['full_name'] ?? ''));
@@ -56,6 +81,24 @@ if ($action === 'send_code') {
         $mailBody = "Hello {$fullName},\n\nYour Mamidav verification code is: {$code}\n\nThis code is valid for 15 minutes. If you did not request this signup, you can ignore this email.\n";
         send_mamidav_email($email, 'Your Mamidav verification code', $mailBody);
     } catch (Throwable $e) {
+        try {
+            $cleanup = $pdo->prepare('DELETE FROM email_verifications WHERE email = ? AND verification_code = ?');
+            $cleanup->execute([$email, $code]);
+        } catch (Throwable $cleanupError) {
+            error_log(json_encode([
+                'event' => 'signup_verification_cleanup_failed',
+                'timestamp' => gmdate('c'),
+                'recipient' => mask_email_for_log($email),
+            ]));
+        }
+
+        error_log(json_encode([
+            'event' => 'signup_verification_email_failed',
+            'timestamp' => gmdate('c'),
+            'recipient' => mask_email_for_log($email),
+            'category' => categorize_mail_error($e->getMessage()),
+            'error' => sanitize_mail_error_for_log($e->getMessage()),
+        ]));
         http_response_code(500);
         echo json_encode(['error' => 'We could not send the verification email right now. Please try again later.']);
         exit;
