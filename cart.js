@@ -465,6 +465,14 @@ if (resendCodeBtn) {
   resendCodeBtn.addEventListener("click", resendSignupCode);
 }
 
+const signupForm = document.getElementById("signup-form");
+if (signupForm) {
+  signupForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    void doSignup(signupForm);
+  });
+}
+
 async function doLogin(form) {
   const errEl = document.getElementById("form-error");
   if (errEl) errEl.textContent = "";

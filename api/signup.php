@@ -31,8 +31,21 @@ function sanitize_mail_error_for_log($message) {
     return substr(preg_replace('/[\r\n]+/', ' ', $message), 0, 500);
 }
 
+function log_signup_diagnostic($event, $action, $category = null) {
+    $entry = [
+        'event' => $event,
+        'timestamp' => gmdate('c'),
+        'action' => $action,
+    ];
+    if ($category !== null) {
+        $entry['category'] = $category;
+    }
+    error_log(json_encode($entry));
+}
+
 $input = json_input();
 $action = strtolower(trim((string) ($input['action'] ?? 'create')));
+log_signup_diagnostic('signup_request_received', $action);
 $fullName = trim((string) ($input['full_name'] ?? ''));
 $email = trim(strtolower((string) ($input['email'] ?? '')));
 $phone = trim((string) ($input['phone'] ?? ''));
@@ -40,6 +53,7 @@ $password = (string) ($input['password'] ?? '');
 $verificationCode = trim((string) ($input['verification_code'] ?? ''));
 
 if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    log_signup_diagnostic('signup_validation_failed', $action, 'invalid_email');
     http_response_code(400);
     echo json_encode(['error' => 'Please enter a valid email address.']);
     exit;
@@ -49,11 +63,13 @@ $pdo = get_db();
 
 if ($action === 'send_code') {
     if ($fullName === '' || $email === '' || $password === '') {
+        log_signup_diagnostic('signup_validation_failed', $action, 'missing_required_field');
         http_response_code(400);
         echo json_encode(['error' => 'Full name, email and password are required.']);
         exit;
     }
     if (strlen($password) < 8) {
+        log_signup_diagnostic('signup_validation_failed', $action, 'password_length');
         http_response_code(400);
         echo json_encode(['error' => 'Password must be at least 8 characters.']);
         exit;
@@ -62,6 +78,7 @@ if ($action === 'send_code') {
     $existingUser = $pdo->prepare('SELECT id FROM users WHERE email = ?');
     $existingUser->execute([$email]);
     if ($existingUser->fetch()) {
+        log_signup_diagnostic('signup_validation_failed', $action, 'duplicate_email');
         http_response_code(409);
         echo json_encode(['error' => 'An account with that email already exists.']);
         exit;
@@ -78,8 +95,10 @@ if ($action === 'send_code') {
     $stmt->execute([$email, $fullName, $phone, $hash, $code, $expiresAt]);
 
     try {
+        log_signup_diagnostic('signup_verification_email_send_attempted', $action);
         $mailBody = "Hello {$fullName},\n\nYour Mamidav verification code is: {$code}\n\nThis code is valid for 15 minutes. If you did not request this signup, you can ignore this email.\n";
         send_mamidav_email($email, 'Your Mamidav verification code', $mailBody);
+        log_signup_diagnostic('signup_verification_email_send_succeeded', $action);
     } catch (Throwable $e) {
         try {
             $cleanup = $pdo->prepare('DELETE FROM email_verifications WHERE email = ? AND verification_code = ?');
