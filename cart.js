@@ -361,16 +361,25 @@ function requestPayment(method) {
 // ---------- Inquiry forms ----------
 
 function submitInquiry(form, subject) {
-  const data =
-    new FormData(form);
+  const data = new FormData(form);
 
   const lines = [];
 
   for (const [key, value] of data.entries()) {
     lines.push(
-      key + ": " + (value || "-")
+      key + ": " + (value || "Not provided")
     );
   }
+
+  const body =
+    "Dear Mamidav International Limited,\n\n" +
+    "I would like to make an investment inquiry through your website.\n\n" +
+    "INVESTMENT INQUIRY DETAILS\n" +
+    "--------------------------\n" +
+    lines.join("\n") +
+    "\n\n" +
+    "Please contact me with further information regarding this investment opportunity.\n\n" +
+    "Thank you.";
 
   const mailto =
     "mailto:" +
@@ -378,9 +387,7 @@ function submitInquiry(form, subject) {
     "?subject=" +
     encodeURIComponent(subject) +
     "&body=" +
-    encodeURIComponent(
-      lines.join("\n")
-    );
+    encodeURIComponent(body);
 
   window.location.href = mailto;
 
@@ -1744,6 +1751,34 @@ document.addEventListener(
       );
     }
 
+// ----------------------------------------
+// INVESTMENT INQUIRY FORM
+// ----------------------------------------
+
+const investmentForm =
+  document.getElementById(
+    "investment-form"
+  );
+
+if (investmentForm) {
+
+  console.log(
+    "MAMIDAV INVESTMENT FORM JS LOADED"
+  );
+
+  investmentForm.addEventListener(
+    "submit",
+    (event) => {
+
+      event.preventDefault();
+
+      submitInquiry(
+        investmentForm,
+        "Investment Inquiry - Mamidav International Limited"
+      );
+    }
+  );
+}
     // ----------------------------------------
     // VERIFICATION FORM
     // ----------------------------------------
