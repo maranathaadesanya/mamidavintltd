@@ -10,8 +10,9 @@
 </div>
 
 <div class="container">
-<form class="form-card" id="login-form" onsubmit="return doLogin(this)">
+<form class="form-card" id="login-form" method="post" onsubmit="event.preventDefault(); if (typeof doLogin === 'function') { void doLogin(this); } return false;">
 <p id="form-error" style="color:#a33;font-size:13px;margin:0"></p>
+<p id="form-success" style="color:#0a4d32;font-size:13px;margin:0"></p>
 <label>Email<input type="email" name="email" required></label>
 <label>Password<input type="password" name="password" required></label>
 <button type="submit" class="btn">Log In</button>

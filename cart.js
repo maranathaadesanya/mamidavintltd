@@ -288,10 +288,16 @@ function setVerificationPanelVisible(visible) {
   if (!verifyPanel) return;
   verifyPanel.hidden = !visible;
   verifyPanel.setAttribute("aria-hidden", String(!visible));
+  verifyPanel.style.display = visible ? "flex" : "none";
 }
 
 function hideVerificationPanel() {
   setVerificationPanelVisible(false);
+}
+
+function approvedPostAuthDestination() {
+  const next = new URLSearchParams(window.location.search).get("next");
+  return next === "payments.html" ? "payments.html" : "index.html";
 }
 
 function showVerificationPanel(email) {
@@ -443,9 +449,8 @@ async function doVerifySignupCode(form) {
 
   currentUser = finalizeRes.data;
   pendingSignup = null;
-  await mergeGuestCartIfAny();
-  
-  // Show success message
+
+  // Account creation has succeeded; show this before any optional cart merge.
   if (errEl) {
     errEl.textContent = "";
   }
@@ -454,15 +459,16 @@ async function doVerifySignupCode(form) {
     verifyMsg.textContent = "✓ Signup successful! Welcome to Mamidav International Limited.";
     verifyMsg.style.color = "#0a4d32";
   }
+
+  try {
+    await mergeGuestCartIfAny();
+  } catch (e) {
+    // The account is already created. Do not block its success state or redirect.
+  }
   
   // Redirect after brief delay
   setTimeout(() => {
-    try {
-    const next = new URLSearchParams(window.location.search).get('next');
-    window.location.href = next === 'payments.html' ? 'payments.html' : 'index.html';
-  } catch (e) {
-      window.location.href = "index.html";
-    }
+    window.location.href = approvedPostAuthDestination();
   }, 1500);
   
   return false;
@@ -488,30 +494,30 @@ if (verifyForm) {
 
 async function doLogin(form) {
   const errEl = document.getElementById("form-error");
+  const successEl = document.getElementById("form-success");
   if (errEl) errEl.textContent = "";
+  if (successEl) successEl.textContent = "";
   const data = formEntries(form);
   const { ok, data: res } = await apiPost("login.php", {
     email: data.email,
     password: data.password,
   });
-  if (!ok) {
+  if (!ok || !res || res.success === false) {
     if (errEl) errEl.textContent = res.error || "Something went wrong. Please try again.";
     return false;
   }
   currentUser = res;
-  await mergeGuestCartIfAny();
-  // Resume any intended redirect after signup
+
+  if (successEl) successEl.textContent = "Login successful!";
+
   try {
-    const params = new URLSearchParams(window.location.search);
-    const next = params.get('next');
-    if (next && !next.includes('://')) {
-      window.location.href = next;
-    } else {
-      window.location.href = "dashboard.html";
-    }
+    await mergeGuestCartIfAny();
   } catch (e) {
-    window.location.href = "dashboard.html";
+    // A cart merge must not prevent a successful login from continuing.
   }
+  setTimeout(() => {
+    window.location.href = approvedPostAuthDestination();
+  }, 1500);
   return false;
 }
 
