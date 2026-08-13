@@ -285,10 +285,21 @@ let pendingSignup = null;
 
 function setVerificationPanelVisible(visible) {
   const verifyPanel = document.getElementById("signup-verify-panel");
-  if (!verifyPanel) return;
-  verifyPanel.hidden = !visible;
-  verifyPanel.setAttribute("aria-hidden", String(!visible));
-  verifyPanel.style.display = visible ? "flex" : "none";
+  if (!verifyPanel) {
+    console.error("Verification panel not found");
+    return false;
+  }
+
+  if (visible) {
+    verifyPanel.hidden = false;
+    verifyPanel.setAttribute("aria-hidden", "false");
+    verifyPanel.style.removeProperty("display");
+  } else {
+    verifyPanel.hidden = true;
+    verifyPanel.setAttribute("aria-hidden", "true");
+    verifyPanel.style.display = "none";
+  }
+  return true;
 }
 
 function hideVerificationPanel() {
@@ -308,7 +319,7 @@ function showVerificationPanel(email) {
   const verifyInput = document.querySelector("#verify-form input[name='code']");
   
   if (signupForm) signupForm.hidden = true;
-  setVerificationPanelVisible(true);
+  if (!setVerificationPanelVisible(true)) return;
   if (verifyHidden) verifyHidden.value = email;
   if (verifyMessage) {
     verifyMessage.textContent = `A 6-digit verification code was sent to ${email}.`;
@@ -407,6 +418,13 @@ async function doSignup(form) {
   if (errEl) {
     errEl.textContent = res.message || "Verification code sent to your email.";
     errEl.style.color = "#0a4d32";
+  }
+  const verificationPanel = document.getElementById("signup-verify-panel");
+  console.log("SEND CODE SUCCESS", res);
+  console.log("VERIFICATION PANEL", verificationPanel);
+  if (!verificationPanel) {
+    console.error("Verification panel not found");
+    return false;
   }
   showVerificationPanel(data.email);
   return false;
