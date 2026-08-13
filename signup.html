@@ -10,7 +10,7 @@
 </div>
 
 <div class="container">
-<form class="form-card" id="signup-form" method="post">
+<form class="form-card" id="signup-form" method="post" onsubmit="event.preventDefault(); if (typeof doSignup === 'function') { void doSignup(this); } return false;">
 <p id="form-error" style="color:#a33;font-size:13px;margin:0"></p>
 <label>Full Name<input type="text" name="full_name" required></label>
 <label>Email<input type="email" name="email" required></label>

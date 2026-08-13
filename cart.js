@@ -476,10 +476,6 @@ if (resendCodeBtn) {
 const signupForm = document.getElementById("signup-form");
 if (signupForm) {
   hideVerificationPanel();
-  signupForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    void doSignup(signupForm);
-  });
 }
 
 const verifyForm = document.getElementById("verify-form");
