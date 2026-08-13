@@ -17,9 +17,20 @@
 <label>Phone<input type="tel" name="phone"></label>
 <label>Password (min. 8 characters)<input type="password" name="password" minlength="8" required></label>
 <label>Confirm Password<input type="password" name="confirm_password" minlength="8" required></label>
-<button type="submit" class="btn">Create Account</button>
+<button type="submit" class="btn">Send Verification Code</button>
 <p class="form-note">Already have an account? <a href="login.html" style="color:#3e0303">Log in</a></p>
 </form>
+
+<div class="form-card" id="signup-verify-panel" hidden>
+  <p id="verify-message" style="margin:0 0 12px; color:#0a4d32; font-size:13px; font-weight:600;"></p>
+  <form id="verify-form" onsubmit="return doVerifySignupCode(this)">
+    <p id="form-error-verify" style="color:#a33;font-size:13px;margin:0 0 12px"></p>
+    <input type="hidden" name="email" id="verify-email-hidden">
+    <label>Verification Code<input type="text" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="123456" required></label>
+    <button type="submit" class="btn">Verify &amp; Create Account</button>
+    <button type="button" class="btn btn-secondary" id="resend-code-btn" style="margin-top:10px;">Resend Code</button>
+  </form>
+</div>
 </div>
 
 <footer class="site-footer"><div class="container footer-grid"><div class="footer-brand"><img src="logo.png" class="footer-logo" alt="Mamidav logo"><p>Integrated operational execution across agriculture, events, culinary services and power engineering.</p></div><div><h4>Company</h4><a href="index.html">Home</a><a href="agriculture.html">Agriculture</a><a href="engineering.html">Engineering</a><a href="services.html">Services</a></div><div><h4>Quick links</h4><a href="investors.html">Investors</a><a href="dashboard.html">Dashboard</a><a href="cart.html">Cart</a><a href="contact.html">Contact</a></div><div><h4>Contact</h4><a href="mailto:mail@mamidavintltd.com">mail@mamidavintltd.com</a><span>Monday – Saturday</span><span>Nigeria</span></div></div><div class="container footer-bottom"><span>© 2026 Mamidav International Limited</span><span>Integrated solutions. Reliable execution.</span></div></footer>

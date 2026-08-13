@@ -281,15 +281,65 @@ function formEntries(form) {
   return Object.fromEntries(new FormData(form).entries());
 }
 
+let pendingSignup = null;
+
+function showVerificationPanel(email) {
+  const signupForm = document.getElementById("signup-form");
+  const verifyPanel = document.getElementById("signup-verify-panel");
+  const verifyHidden = document.getElementById("verify-email-hidden");
+  const verifyMessage = document.getElementById("verify-message");
+  if (signupForm) signupForm.hidden = true;
+  if (verifyPanel) verifyPanel.hidden = false;
+  if (verifyHidden) verifyHidden.value = email;
+  if (verifyMessage) verifyMessage.textContent = `A 6-digit verification code was sent to ${email}.`;
+}
+
+async function resendSignupCode() {
+  if (!pendingSignup) return;
+  const { ok, data: res } = await apiPost("signup.php", {
+    action: "send_code",
+    full_name: pendingSignup.full_name,
+    email: pendingSignup.email,
+    phone: pendingSignup.phone,
+    password: pendingSignup.password,
+  });
+  const msgEl = document.getElementById("form-error");
+  const verifyMsg = document.getElementById("verify-message");
+  if (!ok) {
+    if (msgEl) {
+      msgEl.textContent = res.error || "Unable to resend the verification code.";
+      msgEl.style.color = "#a33";
+    }
+    return;
+  }
+  if (verifyMsg) verifyMsg.textContent = `A new code was sent to ${pendingSignup.email}.`;
+  if (msgEl) {
+    msgEl.textContent = "";
+    msgEl.style.color = "#a33";
+  }
+}
+
 async function doSignup(form) {
   const errEl = document.getElementById("form-error");
-  if (errEl) errEl.textContent = "";
+  if (errEl) {
+    errEl.textContent = "";
+    errEl.style.color = "#a33";
+  }
   const data = formEntries(form);
   if (data.password !== data.confirm_password) {
     if (errEl) errEl.textContent = "Passwords do not match.";
     return false;
   }
+
+  pendingSignup = {
+    full_name: data.full_name,
+    email: data.email,
+    phone: data.phone,
+    password: data.password,
+  };
+
   const { ok, data: res } = await apiPost("signup.php", {
+    action: "send_code",
     full_name: data.full_name,
     email: data.email,
     phone: data.phone,
@@ -297,11 +347,55 @@ async function doSignup(form) {
   });
   if (!ok) {
     if (errEl) errEl.textContent = res.error || "Something went wrong. Please try again.";
+    pendingSignup = null;
     return false;
   }
-  currentUser = res;
+
+  if (errEl) {
+    errEl.textContent = res.message || "Verification code sent.";
+    errEl.style.color = "#0a4d32";
+  }
+  showVerificationPanel(data.email);
+  return false;
+}
+
+async function doVerifySignupCode(form) {
+  const errEl = document.getElementById("form-error-verify");
+  if (errEl) errEl.textContent = "";
+
+  const email = form.email.value || (pendingSignup ? pendingSignup.email : "");
+  const code = (form.code.value || "").trim();
+
+  if (!email || !code) {
+    if (errEl) errEl.textContent = "Please enter the verification code.";
+    return false;
+  }
+
+  const verifyRes = await apiPost("signup.php", {
+    action: "verify_code",
+    email,
+    verification_code: code,
+  });
+  if (!verifyRes.ok) {
+    if (errEl) errEl.textContent = verifyRes.data.error || "Invalid verification code.";
+    return false;
+  }
+
+  const finalizeRes = await apiPost("signup.php", {
+    action: "create",
+    full_name: pendingSignup ? pendingSignup.full_name : "",
+    email,
+    phone: pendingSignup ? pendingSignup.phone : "",
+    password: pendingSignup ? pendingSignup.password : "",
+    verification_code: code,
+  });
+  if (!finalizeRes.ok) {
+    if (errEl) errEl.textContent = finalizeRes.data.error || "Unable to create your account.";
+    return false;
+  }
+
+  currentUser = finalizeRes.data;
   await mergeGuestCartIfAny();
-  // Resume any intended redirect after authentication
   try {
     const params = new URLSearchParams(window.location.search);
     const next = params.get('next');
@@ -314,6 +408,11 @@ async function doSignup(form) {
     window.location.href = "dashboard.html";
   }
   return false;
+}
+
+const resendCodeBtn = document.getElementById("resend-code-btn");
+if (resendCodeBtn) {
+  resendCodeBtn.addEventListener("click", resendSignupCode);
 }
 
 async function doLogin(form) {
