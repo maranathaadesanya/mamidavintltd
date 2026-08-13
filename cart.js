@@ -22,8 +22,10 @@ function escapeHtml(str) {
 async function apiPost(endpoint, body) {
   const res = await fetch(API_BASE + endpoint, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body || {}),
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body || {})
   });
 
   const data = await res.json().catch(() => ({}));
@@ -50,7 +52,9 @@ async function apiGet(endpoint) {
 
 function getLocalCart() {
   try {
-    return JSON.parse(localStorage.getItem(MAMIDAV_LOCAL_CART_KEY)) || [];
+    return JSON.parse(
+      localStorage.getItem(MAMIDAV_LOCAL_CART_KEY)
+    ) || [];
   } catch (e) {
     return [];
   }
@@ -82,10 +86,14 @@ async function loadCart() {
 }
 
 async function addToCart(id, name, price, category) {
-  const qtyInput = document.getElementById("qty-" + id);
+  const qtyInput =
+    document.getElementById("qty-" + id);
 
   const qty = qtyInput
-    ? Math.max(1, parseInt(qtyInput.value, 10) || 1)
+    ? Math.max(
+        1,
+        parseInt(qtyInput.value, 10) || 1
+      )
     : 1;
 
   if (currentUser) {
@@ -95,7 +103,10 @@ async function addToCart(id, name, price, category) {
     });
   } else {
     const items = getLocalCart();
-    const existing = items.find((i) => i.id === id);
+
+    const existing = items.find(
+      (i) => i.id === id
+    );
 
     if (existing) {
       existing.qty += qty;
@@ -114,7 +125,8 @@ async function addToCart(id, name, price, category) {
 
   await loadCart();
 
-  const btn = document.getElementById("add-" + id);
+  const btn =
+    document.getElementById("add-" + id);
 
   if (btn) {
     const original = btn.textContent;
@@ -134,7 +146,9 @@ async function removeFromCart(id) {
     });
   } else {
     saveLocalCart(
-      getLocalCart().filter((i) => i.id !== id)
+      getLocalCart().filter(
+        (i) => i.id !== id
+      )
     );
   }
 
@@ -154,7 +168,10 @@ async function updateCartQty(id, qty) {
     });
   } else {
     const items = getLocalCart();
-    const item = items.find((i) => i.id === id);
+
+    const item = items.find(
+      (i) => i.id === id
+    );
 
     if (item) {
       item.qty = qty;
@@ -175,7 +192,8 @@ function cartCount() {
 
 function cartTotal() {
   return cartState.reduce(
-    (sum, item) => sum + item.qty * item.price,
+    (sum, item) =>
+      sum + item.qty * item.price,
     0
   );
 }
@@ -183,28 +201,40 @@ function cartTotal() {
 function renderCartBadge() {
   const count = cartCount();
 
-  document.querySelectorAll(".cart-badge").forEach((el) => {
-    el.textContent = count;
-    el.style.display =
-      count > 0
-        ? "inline-block"
-        : "none";
-  });
+  document
+    .querySelectorAll(".cart-badge")
+    .forEach((el) => {
+      el.textContent = count;
+
+      el.style.display =
+        count > 0
+          ? "inline-block"
+          : "none";
+    });
 }
 
 function renderCartTable() {
-  const body = document.getElementById("cart-body");
+  const body =
+    document.getElementById(
+      "cart-body"
+    );
 
   if (!body) return;
 
   const emptyMsg =
-    document.getElementById("cart-empty");
+    document.getElementById(
+      "cart-empty"
+    );
 
   const totalEl =
-    document.getElementById("cart-total");
+    document.getElementById(
+      "cart-total"
+    );
 
   const placeOrderBtn =
-    document.getElementById("place-order-btn");
+    document.getElementById(
+      "place-order-btn"
+    );
 
   if (cartState.length === 0) {
     body.innerHTML = "";
@@ -241,7 +271,11 @@ function renderCartTable() {
       (item) => `
         <tr>
           <td>${escapeHtml(item.name)}</td>
-          <td>${formatNaira(item.price)}</td>
+
+          <td>
+            ${formatNaira(item.price)}
+          </td>
+
           <td>
             <input
               type="number"
@@ -251,7 +285,13 @@ function renderCartTable() {
               onchange="updateCartQty('${escapeHtml(item.id)}', this.value)"
             >
           </td>
-          <td>${formatNaira(item.price * item.qty)}</td>
+
+          <td>
+            ${formatNaira(
+              item.price * item.qty
+            )}
+          </td>
+
           <td>
             <button
               class="remove-btn"
@@ -267,21 +307,28 @@ function renderCartTable() {
 
   if (totalEl) {
     totalEl.textContent =
-      "Total: " + formatNaira(cartTotal());
+      "Total: " +
+      formatNaira(cartTotal());
   }
 }
 
 // ---------- Orders / Payments ----------
 
 function placeOrder() {
-  if (cartState.length === 0) return;
-
-  if (currentUser) {
-    window.location.href = "payments.html";
+  if (cartState.length === 0) {
     return;
   }
 
-  const next = encodeURIComponent("payments.html");
+  if (currentUser) {
+    window.location.href =
+      "payments.html";
+    return;
+  }
+
+  const next =
+    encodeURIComponent(
+      "payments.html"
+    );
 
   window.location.href =
     `login.html?next=${next}`;
@@ -302,7 +349,9 @@ function requestPayment(method) {
     "mailto:" +
     MAMIDAV_ORDER_EMAIL +
     "?subject=" +
-    encodeURIComponent("Payment via " + method) +
+    encodeURIComponent(
+      "Payment via " + method
+    ) +
     "&body=" +
     encodeURIComponent(body);
 
@@ -312,7 +361,9 @@ function requestPayment(method) {
 // ---------- Inquiry forms ----------
 
 function submitInquiry(form, subject) {
-  const data = new FormData(form);
+  const data =
+    new FormData(form);
+
   const lines = [];
 
   for (const [key, value] of data.entries()) {
@@ -327,7 +378,9 @@ function submitInquiry(form, subject) {
     "?subject=" +
     encodeURIComponent(subject) +
     "&body=" +
-    encodeURIComponent(lines.join("\n"));
+    encodeURIComponent(
+      lines.join("\n")
+    );
 
   window.location.href = mailto;
 
@@ -337,97 +390,146 @@ function submitInquiry(form, subject) {
 // ---------- Accounts ----------
 
 function renderAuthNav() {
-  document.querySelectorAll("nav").forEach((nav) => {
-    const existing =
-      nav.querySelector(".auth-nav");
+  document
+    .querySelectorAll("nav")
+    .forEach((nav) => {
 
-    if (existing) {
-      existing.remove();
-    }
-
-    const span =
-      document.createElement("span");
-
-    span.className = "auth-nav";
-
-    if (currentUser) {
-      const firstName = escapeHtml(
-        (currentUser.full_name || "")
-          .split(" ")[0] || "Account"
-      );
-
-      span.innerHTML = `
-        <div class="account-control">
-          <button
-            class="account-btn"
-            type="button"
-            aria-expanded="false"
-          >
-            👤 ${firstName} ▾
-          </button>
-
-          <div class="account-menu" hidden>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="profile.html">Profile</a>
-            <a
-              href="#"
-              onclick="doLogout();return false;"
-            >
-              Logout
-            </a>
-          </div>
-        </div>
-      `;
-    } else {
-      span.innerHTML =
-        `<a href="login.html">Login</a>`;
-    }
-
-    nav.appendChild(span);
-
-    const accBtn =
-      span.querySelector(".account-btn");
-
-    const accMenu =
-      span.querySelector(".account-menu");
-
-    if (accBtn && accMenu) {
-      accBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-
-        const open = accMenu.hidden;
-
-        accMenu.hidden = !open;
-
-        accBtn.setAttribute(
-          "aria-expanded",
-          String(open)
+      const existing =
+        nav.querySelector(
+          ".auth-nav"
         );
-      });
 
-      document.addEventListener("click", (e) => {
-        if (!span.contains(e.target)) {
-          accMenu.hidden = true;
+      if (existing) {
+        existing.remove();
+      }
 
-          accBtn.setAttribute(
-            "aria-expanded",
-            "false"
+      const span =
+        document.createElement(
+          "span"
+        );
+
+      span.className =
+        "auth-nav";
+
+      if (currentUser) {
+
+        const firstName =
+          escapeHtml(
+            (
+              currentUser.full_name ||
+              ""
+            )
+              .split(" ")[0] ||
+              "Account"
           );
-        }
-      });
-    }
-  });
+
+        span.innerHTML = `
+          <div class="account-control">
+
+            <button
+              class="account-btn"
+              type="button"
+              aria-expanded="false"
+            >
+              👤 ${firstName} ▾
+            </button>
+
+            <div
+              class="account-menu"
+              hidden
+            >
+              <a href="dashboard.html">
+                Dashboard
+              </a>
+
+              <a href="profile.html">
+                Profile
+              </a>
+
+              <a
+                href="#"
+                onclick="doLogout();return false;"
+              >
+                Logout
+              </a>
+            </div>
+
+          </div>
+        `;
+
+      } else {
+
+        span.innerHTML =
+          `<a href="login.html">Login</a>`;
+      }
+
+      nav.appendChild(span);
+
+      const accBtn =
+        span.querySelector(
+          ".account-btn"
+        );
+
+      const accMenu =
+        span.querySelector(
+          ".account-menu"
+        );
+
+      if (accBtn && accMenu) {
+
+        accBtn.addEventListener(
+          "click",
+          (e) => {
+
+            e.stopPropagation();
+
+            const open =
+              accMenu.hidden;
+
+            accMenu.hidden = !open;
+
+            accBtn.setAttribute(
+              "aria-expanded",
+              String(open)
+            );
+          }
+        );
+
+        document.addEventListener(
+          "click",
+          (e) => {
+
+            if (!span.contains(e.target)) {
+
+              accMenu.hidden = true;
+
+              accBtn.setAttribute(
+                "aria-expanded",
+                "false"
+              );
+            }
+          }
+        );
+      }
+    });
 }
 
 // ---------- Cart icon ----------
 
 function renderCartIcons() {
+
   const svgNS =
     "http://www.w3.org/2000/svg";
 
-  document.querySelectorAll(".cart-link")
+  document
+    .querySelectorAll(".cart-link")
     .forEach((a) => {
-      if (a.querySelector(".cart-icon")) {
+
+      if (
+        a.querySelector(
+          ".cart-icon"
+        )
+      ) {
         return;
       }
 
@@ -499,9 +601,20 @@ function renderCartIcons() {
           "circle"
         );
 
-      c1.setAttribute("cx", "9");
-      c1.setAttribute("cy", "20");
-      c1.setAttribute("r", "1");
+      c1.setAttribute(
+        "cx",
+        "9"
+      );
+
+      c1.setAttribute(
+        "cy",
+        "20"
+      );
+
+      c1.setAttribute(
+        "r",
+        "1"
+      );
 
       const c2 =
         document.createElementNS(
@@ -509,45 +622,80 @@ function renderCartIcons() {
           "circle"
         );
 
-      c2.setAttribute("cx", "18");
-      c2.setAttribute("cy", "20");
-      c2.setAttribute("r", "1");
+      c2.setAttribute(
+        "cx",
+        "18"
+      );
+
+      c2.setAttribute(
+        "cy",
+        "20"
+      );
+
+      c2.setAttribute(
+        "r",
+        "1"
+      );
 
       svg.appendChild(path);
       svg.appendChild(c1);
       svg.appendChild(c2);
 
       const sr =
-        document.createElement("span");
+        document.createElement(
+          "span"
+        );
 
-      sr.className = "sr-only";
-      sr.textContent = "Cart";
+      sr.className =
+        "sr-only";
+
+      sr.textContent =
+        "Cart";
 
       const badge =
-        a.querySelector(".cart-badge");
+        a.querySelector(
+          ".cart-badge"
+        );
 
-      a.insertBefore(svg, badge);
-      a.insertBefore(sr, badge);
+      a.insertBefore(
+        svg,
+        badge
+      );
 
-      a.childNodes.forEach((n) => {
-        if (
-          n.nodeType === Node.TEXT_NODE &&
-          n.textContent.trim() === "Cart"
-        ) {
-          n.textContent = "";
+      a.insertBefore(
+        sr,
+        badge
+      );
+
+      a.childNodes.forEach(
+        (n) => {
+
+          if (
+            n.nodeType ===
+              Node.TEXT_NODE &&
+            n.textContent
+              .trim() ===
+              "Cart"
+          ) {
+            n.textContent = "";
+          }
         }
-      });
+      );
     });
 }
 
 // ---------- Session ----------
 
 async function checkSession() {
+
   const { data } =
-    await apiGet("session.php");
+    await apiGet(
+      "session.php"
+    );
 
   currentUser =
-    data && data.logged_in
+    data &&
+    data.logged_in
       ? data
       : null;
 
@@ -555,10 +703,14 @@ async function checkSession() {
 }
 
 async function mergeGuestCartIfAny() {
+
   const guestItems =
     getLocalCart();
 
-  if (guestItems.length > 0) {
+  if (
+    guestItems.length > 0
+  ) {
+
     await apiPost(
       "cart_merge.php",
       {
@@ -582,24 +734,35 @@ function formEntries(form) {
 
 let pendingSignup = null;
 
-function setVerificationPanelVisible(visible) {
+function setVerificationPanelVisible(
+  visible
+) {
+
   const verifyPanel =
     document.getElementById(
       "signup-verify-panel"
     );
 
   if (!verifyPanel) {
+
+    console.error(
+      "MAMIDAV: Verification panel #signup-verify-panel was NOT found in the DOM."
+    );
+
     return false;
   }
 
+  console.log(
+    "MAMIDAV: Verification panel found:",
+    verifyPanel
+  );
+
   if (visible) {
-    /*
-     * IMPORTANT:
-     * Remove hidden attribute and force display.
-     * !important protects this from CSS rules such as:
-     * #signup-verify-panel { display:none !important; }
-     */
-    verifyPanel.removeAttribute("hidden");
+
+    verifyPanel.removeAttribute(
+      "hidden"
+    );
+
     verifyPanel.setAttribute(
       "aria-hidden",
       "false"
@@ -611,11 +774,27 @@ function setVerificationPanelVisible(visible) {
       "important"
     );
 
-    verifyPanel.style.visibility = "visible";
-    verifyPanel.style.opacity = "1";
-    verifyPanel.style.height = "auto";
-    verifyPanel.style.overflow = "visible";
+    verifyPanel.style.visibility =
+      "visible";
+
+    verifyPanel.style.opacity =
+      "1";
+
+    verifyPanel.style.height =
+      "auto";
+
+    verifyPanel.style.minHeight =
+      "100px";
+
+    verifyPanel.style.overflow =
+      "visible";
+
+    console.log(
+      "MAMIDAV: Verification panel is now visible"
+    );
+
   } else {
+
     verifyPanel.setAttribute(
       "hidden",
       ""
@@ -637,10 +816,18 @@ function setVerificationPanelVisible(visible) {
 }
 
 function hideVerificationPanel() {
-  setVerificationPanelVisible(false);
+  setVerificationPanelVisible(
+    false
+  );
 }
 
 function showVerificationPanel(email) {
+
+  console.log(
+    "MAMIDAV: Showing verification panel for:",
+    email
+  );
+
   const signupForm =
     document.getElementById(
       "signup-form"
@@ -666,10 +853,9 @@ function showVerificationPanel(email) {
       "#verify-form input[name='code']"
     );
 
-  /*
-   * Hide original signup form.
-   */
+  // Hide original signup form
   if (signupForm) {
+
     signupForm.setAttribute(
       "hidden",
       ""
@@ -680,29 +866,36 @@ function showVerificationPanel(email) {
       "none",
       "important"
     );
+
+    console.log(
+      "MAMIDAV: Signup form hidden."
+    );
   }
 
-  /*
-   * Show verification panel.
-   */
+  // Show verification panel
   const visible =
-    setVerificationPanelVisible(true);
+    setVerificationPanelVisible(
+      true
+    );
 
   if (!visible) {
+
+    console.error(
+      "MAMIDAV: Unable to show verification panel."
+    );
+
     return false;
   }
 
-  /*
-   * Put email into hidden field.
-   */
+  // Set email
   if (verifyHidden) {
-    verifyHidden.value = email;
+    verifyHidden.value =
+      email;
   }
 
-  /*
-   * Show success message.
-   */
+  // Set message
   if (verifyMessage) {
+
     verifyMessage.textContent =
       `A 6-digit verification code was sent to ${email}.`;
 
@@ -711,30 +904,31 @@ function showVerificationPanel(email) {
   }
 
   if (verifyErrorEl) {
-    verifyErrorEl.textContent = "";
+    verifyErrorEl.textContent =
+      "";
   }
 
-  /*
-   * Scroll verification panel into view.
-   */
+  // Scroll panel into view
   const verifyPanel =
     document.getElementById(
       "signup-verify-panel"
     );
 
   if (verifyPanel) {
+
     verifyPanel.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
   }
 
-  /*
-   * Focus verification input.
-   */
+  // Focus verification input
   if (verifyInput) {
+
     setTimeout(() => {
+
       verifyInput.focus();
+
     }, 300);
   }
 
@@ -744,7 +938,13 @@ function showVerificationPanel(email) {
 // ---------- Resend verification code ----------
 
 async function resendSignupCode() {
+
   if (!pendingSignup) {
+
+    console.warn(
+      "MAMIDAV: No pending signup available for resend."
+    );
+
     return;
   }
 
@@ -768,24 +968,33 @@ async function resendSignupCode() {
   }
 
   try {
-    const { ok, data: res } =
-      await apiPost(
-        "signup.php",
-        {
-          action: "send_code",
-          full_name:
-            pendingSignup.full_name,
-          email:
-            pendingSignup.email,
-          phone:
-            pendingSignup.phone,
-          password:
-            pendingSignup.password
-        }
-      );
 
-    if (!ok || !res || res.success !== true) {
+    const {
+      ok,
+      data: res
+    } = await apiPost(
+      "signup.php",
+      {
+        action: "send_code",
+        full_name:
+          pendingSignup.full_name,
+        email:
+          pendingSignup.email,
+        phone:
+          pendingSignup.phone,
+        password:
+          pendingSignup.password
+      }
+    );
+
+    if (
+      !ok ||
+      !res ||
+      res.success !== true
+    ) {
+
       if (verifyErrorEl) {
+
         verifyErrorEl.textContent =
           res.error ||
           "Unable to resend the verification code. Please try again.";
@@ -795,6 +1004,7 @@ async function resendSignupCode() {
     }
 
     if (verifyMsg) {
+
       verifyMsg.textContent =
         `A new verification code was sent to ${pendingSignup.email}.`;
 
@@ -803,15 +1013,25 @@ async function resendSignupCode() {
     }
 
     if (verifyErrorEl) {
-      verifyErrorEl.textContent = "";
+      verifyErrorEl.textContent =
+        "";
     }
 
   } catch (error) {
+
+    console.error(
+      "MAMIDAV: Resend error:",
+      error
+    );
+
     if (verifyErrorEl) {
+
       verifyErrorEl.textContent =
         "Unable to resend the verification code. Please try again.";
     }
+
   } finally {
+
     if (resendBtn) {
       resendBtn.disabled = false;
     }
@@ -821,29 +1041,48 @@ async function resendSignupCode() {
 // ---------- Main signup function ----------
 
 async function doSignup(form) {
+
+  console.log(
+    "MAMIDAV: doSignup() started."
+  );
+
   const errEl =
     document.getElementById(
       "form-error"
     );
 
   if (errEl) {
-    errEl.textContent = "";
-    errEl.style.color = "#a33";
+
+    errEl.textContent =
+      "";
+
+    errEl.style.color =
+      "#a33";
   }
 
   const formData =
     formEntries(form);
 
-  /*
-   * Validate password confirmation.
-   */
+  console.log(
+    "MAMIDAV: Signup form submitted.",
+    {
+      full_name:
+        formData.full_name,
+      email:
+        formData.email
+    }
+  );
+
+  // Password confirmation
   if (
     formData.password !==
     formData.confirm_password
   ) {
+
     hideVerificationPanel();
 
     if (errEl) {
+
       errEl.textContent =
         "Passwords do not match.";
     }
@@ -851,17 +1090,17 @@ async function doSignup(form) {
     return false;
   }
 
-  /*
-   * Validate required fields.
-   */
+  // Required fields
   if (
     !formData.full_name ||
     !formData.email ||
     !formData.password
   ) {
+
     hideVerificationPanel();
 
     if (errEl) {
+
       errEl.textContent =
         "Please fill in all required fields.";
     }
@@ -869,17 +1108,17 @@ async function doSignup(form) {
     return false;
   }
 
-  /*
-   * Store signup information temporarily.
-   * This is needed because the verification step
-   * happens after the first form is hidden.
-   */
+  // Store pending signup
   pendingSignup = {
+
     full_name:
-      formData.full_name.trim(),
+      formData.full_name
+        .trim(),
 
     email:
-      formData.email.trim().toLowerCase(),
+      formData.email
+        .trim()
+        .toLowerCase(),
 
     phone:
       formData.phone || "",
@@ -888,39 +1127,66 @@ async function doSignup(form) {
       formData.password
   };
 
-  /*
-   * Send verification code.
-   */
-  try {
-    const { ok, data } =
-      await apiPost(
-        "signup.php",
-        {
-          action: "send_code",
-          full_name:
-            pendingSignup.full_name,
-          email:
-            pendingSignup.email,
-          phone:
-            pendingSignup.phone,
-          password:
-            pendingSignup.password
-        }
-      );
+  console.log(
+    "MAMIDAV: pendingSignup created:",
+    {
+      full_name:
+        pendingSignup.full_name,
+      email:
+        pendingSignup.email
+    }
+  );
 
-    /*
-     * PHP/email failure.
-     */
+  try {
+
+    console.log(
+      "MAMIDAV: Sending verification code..."
+    );
+
+    const {
+      ok,
+      data
+    } = await apiPost(
+      "signup.php",
+      {
+        action:
+          "send_code",
+
+        full_name:
+          pendingSignup.full_name,
+
+        email:
+          pendingSignup.email,
+
+        phone:
+          pendingSignup.phone,
+
+        password:
+          pendingSignup.password
+      }
+    );
+
+    console.log(
+      "MAMIDAV: signup.php response:",
+      {
+        ok,
+        data
+      }
+    );
+
     if (
       !ok ||
       !data ||
       data.success !== true
     ) {
+
       hideVerificationPanel();
 
       if (errEl) {
+
         errEl.textContent =
-          (data && data.error) ||
+          (data &&
+            data.error) ||
           "Unable to send verification code. Please try again.";
 
         errEl.style.color =
@@ -930,25 +1196,36 @@ async function doSignup(form) {
       return false;
     }
 
-    /*
-     * SUCCESS:
-     * PHP returned:
-     * {"success":true,"message":"Verification code sent successfully."}
-     *
-     * Now show verification panel.
-     */
+    // SUCCESS
     if (errEl) {
-      errEl.textContent = "";
+      errEl.textContent =
+        "";
     }
+
+    console.log(
+      "MAMIDAV: Verification code successfully sent."
+    );
+
+    console.log(
+      "MAMIDAV: Showing verification panel for:",
+      pendingSignup.email
+    );
 
     showVerificationPanel(
       pendingSignup.email
     );
 
   } catch (error) {
+
+    console.error(
+      "MAMIDAV: Signup request failed:",
+      error
+    );
+
     hideVerificationPanel();
 
     if (errEl) {
+
       errEl.textContent =
         "Unable to connect to the server. Please try again.";
 
@@ -964,27 +1241,42 @@ async function doSignup(form) {
 
 // ---------- Verify signup code ----------
 
-async function doVerifySignupCode(form) {
+async function doVerifySignupCode(
+  form
+) {
+
+  console.log(
+    "MAMIDAV: Verification form submitted."
+  );
+
   const errEl =
     document.getElementById(
       "form-error-verify"
     );
 
   if (errEl) {
-    errEl.textContent = "";
+    errEl.textContent =
+      "";
   }
 
   const email =
     form.email.value ||
-    (pendingSignup
-      ? pendingSignup.email
-      : "");
+    (
+      pendingSignup
+        ? pendingSignup.email
+        : ""
+    );
 
   const code =
-    (form.code.value || "").trim();
+    (
+      form.code.value ||
+      ""
+    ).trim();
 
   if (!email || !code) {
+
     if (errEl) {
+
       errEl.textContent =
         "Please enter the verification code.";
     }
@@ -992,16 +1284,22 @@ async function doVerifySignupCode(form) {
     return false;
   }
 
-  /*
-   * First validate verification code.
-   */
+  console.log(
+    "MAMIDAV: Verifying code for:",
+    email
+  );
+
   const verifyRes =
     await apiPost(
       "signup.php",
       {
-        action: "verify_code",
+        action:
+          "verify_code",
+
         email,
-        verification_code: code
+
+        verification_code:
+          code
       }
     );
 
@@ -1010,7 +1308,9 @@ async function doVerifySignupCode(form) {
     !verifyRes.data ||
     verifyRes.data.success !== true
   ) {
+
     if (errEl) {
+
       errEl.textContent =
         verifyRes.data.error ||
         "Invalid verification code.";
@@ -1019,29 +1319,36 @@ async function doVerifySignupCode(form) {
     return false;
   }
 
-  /*
-   * Code is valid.
-   * Now create the actual account.
-   */
+  console.log(
+    "MAMIDAV: Verification code accepted."
+  );
+
   const finalizeRes =
     await apiPost(
       "signup.php",
       {
-        action: "create",
+        action:
+          "create",
+
         full_name:
           pendingSignup
             ? pendingSignup.full_name
             : "",
+
         email,
+
         phone:
           pendingSignup
             ? pendingSignup.phone
             : "",
+
         password:
           pendingSignup
             ? pendingSignup.password
             : "",
-        verification_code: code
+
+        verification_code:
+          code
       }
     );
 
@@ -1050,7 +1357,9 @@ async function doVerifySignupCode(form) {
     !finalizeRes.data ||
     finalizeRes.data.success !== true
   ) {
+
     if (errEl) {
+
       errEl.textContent =
         finalizeRes.data.error ||
         "Unable to create your account.";
@@ -1059,16 +1368,15 @@ async function doVerifySignupCode(form) {
     return false;
   }
 
-  /*
-   * Account created successfully.
-   */
   currentUser =
     finalizeRes.data;
 
-  pendingSignup = null;
+  pendingSignup =
+    null;
 
   if (errEl) {
-    errEl.textContent = "";
+    errEl.textContent =
+      "";
   }
 
   const verifyMsg =
@@ -1077,6 +1385,7 @@ async function doVerifySignupCode(form) {
     );
 
   if (verifyMsg) {
+
     verifyMsg.textContent =
       "✓ Signup successful! Welcome to Mamidav International Limited.";
 
@@ -1085,22 +1394,33 @@ async function doVerifySignupCode(form) {
   }
 
   try {
+
     await mergeGuestCartIfAny();
+
   } catch (e) {
-    // Do not block successful account creation.
+
+    console.warn(
+      "MAMIDAV: Cart merge failed after signup:",
+      e
+    );
   }
 
   setTimeout(() => {
+
     if (
       typeof approvedPostAuthDestination ===
       "function"
     ) {
+
       window.location.href =
         approvedPostAuthDestination();
+
     } else {
+
       window.location.href =
         "dashboard.html";
     }
+
   }, 1500);
 
   return false;
@@ -1109,6 +1429,7 @@ async function doVerifySignupCode(form) {
 // ---------- Login ----------
 
 async function doLogin(form) {
+
   const errEl =
     document.getElementById(
       "form-error"
@@ -1120,31 +1441,40 @@ async function doLogin(form) {
     );
 
   if (errEl) {
-    errEl.textContent = "";
+    errEl.textContent =
+      "";
   }
 
   if (successEl) {
-    successEl.textContent = "";
+    successEl.textContent =
+      "";
   }
 
   const data =
     formEntries(form);
 
-  const { ok, data: res } =
-    await apiPost(
-      "login.php",
-      {
-        email: data.email,
-        password: data.password
-      }
-    );
+  const {
+    ok,
+    data: res
+  } = await apiPost(
+    "login.php",
+    {
+      email:
+        data.email,
+
+      password:
+        data.password
+    }
+  );
 
   if (
     !ok ||
     !res ||
     res.success === false
   ) {
+
     if (errEl) {
+
       errEl.textContent =
         res.error ||
         "Something went wrong. Please try again.";
@@ -1153,30 +1483,43 @@ async function doLogin(form) {
     return false;
   }
 
-  currentUser = res;
+  currentUser =
+    res;
 
   if (successEl) {
+
     successEl.textContent =
       "Login successful!";
   }
 
   try {
+
     await mergeGuestCartIfAny();
+
   } catch (e) {
-    // Do not block login.
+
+    console.warn(
+      "MAMIDAV: Cart merge failed after login:",
+      e
+    );
   }
 
   setTimeout(() => {
+
     if (
       typeof approvedPostAuthDestination ===
       "function"
     ) {
+
       window.location.href =
         approvedPostAuthDestination();
+
     } else {
+
       window.location.href =
         "dashboard.html";
     }
+
   }, 1500);
 
   return false;
@@ -1185,12 +1528,14 @@ async function doLogin(form) {
 // ---------- Logout ----------
 
 async function doLogout() {
+
   await apiPost(
     "logout.php",
     {}
   );
 
-  currentUser = null;
+  currentUser =
+    null;
 
   window.location.href =
     "index.html";
@@ -1198,7 +1543,10 @@ async function doLogout() {
 
 // ---------- Profile ----------
 
-async function doUpdateProfile(form) {
+async function doUpdateProfile(
+  form
+) {
+
   const errEl =
     document.getElementById(
       "form-error"
@@ -1210,29 +1558,36 @@ async function doUpdateProfile(form) {
     );
 
   if (errEl) {
-    errEl.textContent = "";
+    errEl.textContent =
+      "";
   }
 
   if (okEl) {
-    okEl.textContent = "";
+    okEl.textContent =
+      "";
   }
 
   const data =
     formEntries(form);
 
-  const { ok, data: res } =
-    await apiPost(
-      "profile_update.php",
-      {
-        full_name:
-          data.full_name,
-        phone:
-          data.phone
-      }
-    );
+  const {
+    ok,
+    data: res
+  } = await apiPost(
+    "profile_update.php",
+    {
+      full_name:
+        data.full_name,
+
+      phone:
+        data.phone
+    }
+  );
 
   if (!ok) {
+
     if (errEl) {
+
       errEl.textContent =
         res.error ||
         "Something went wrong. Please try again.";
@@ -1250,6 +1605,7 @@ async function doUpdateProfile(form) {
   renderAuthNav();
 
   if (okEl) {
+
     okEl.textContent =
       "Profile updated.";
   }
@@ -1258,6 +1614,7 @@ async function doUpdateProfile(form) {
 }
 
 function renderProfilePage() {
+
   if (!currentUser) {
     return;
   }
@@ -1273,11 +1630,13 @@ function renderProfilePage() {
     );
 
   if (nameEl) {
+
     nameEl.textContent =
       currentUser.full_name;
   }
 
   if (emailEl) {
+
     emailEl.textContent =
       currentUser.email;
   }
@@ -1288,11 +1647,14 @@ function renderProfilePage() {
     );
 
   if (form) {
+
     form.full_name.value =
-      currentUser.full_name || "";
+      currentUser.full_name ||
+      "";
 
     form.phone.value =
-      currentUser.phone || "";
+      currentUser.phone ||
+      "";
   }
 }
 
@@ -1302,40 +1664,96 @@ document.addEventListener(
   "DOMContentLoaded",
   async () => {
 
-    /*
-     * Signup page setup.
-     */
+    console.log(
+      "MAMIDAV: DOM initialization started."
+    );
+
+    // ----------------------------------------
+    // SIGNUP FORM
+    // ----------------------------------------
+
     const signupForm =
       document.getElementById(
         "signup-form"
       );
+
+    console.log(
+      "MAMIDAV: signupForm:",
+      signupForm
+    );
+
+    if (signupForm) {
+
+      console.log(
+        "MAMIDAV: Signup form detected."
+      );
+
+      /*
+       * IMPORTANT:
+       * This was the missing piece.
+       *
+       * It connects the signup form's submit
+       * event to doSignup().
+       */
+      signupForm.addEventListener(
+        "submit",
+        (event) => {
+
+          event.preventDefault();
+
+          console.log(
+            "MAMIDAV: SIGNUP SUBMIT EVENT FIRED."
+          );
+
+          void doSignup(
+            signupForm
+          );
+        }
+      );
+
+      /*
+       * Make sure verification panel
+       * starts hidden.
+       */
+      hideVerificationPanel();
+
+    } else {
+
+      console.warn(
+        "MAMIDAV: #signup-form was NOT found on this page."
+      );
+    }
+
+    // ----------------------------------------
+    // VERIFICATION FORM
+    // ----------------------------------------
 
     const verifyForm =
       document.getElementById(
         "verify-form"
       );
 
-    const resendCodeBtn =
-      document.getElementById(
-        "resend-code-btn"
+    console.log(
+      "MAMIDAV: verifyForm:",
+      verifyForm
+    );
+
+    if (verifyForm) {
+
+      console.log(
+        "MAMIDAV: Verification form detected."
       );
 
-    /*
-     * Make sure verification panel
-     * starts hidden.
-     */
-    if (signupForm) {
-      hideVerificationPanel();
-    }
-
-    /*
-     * Verification form submit.
-     */
-    if (verifyForm) {
       verifyForm.addEventListener(
         "submit",
         (event) => {
+
           event.preventDefault();
+
+          console.log(
+            "MAMIDAV: VERIFY SUBMIT EVENT FIRED."
+          );
+
           void doVerifySignupCode(
             verifyForm
           );
@@ -1343,21 +1761,36 @@ document.addEventListener(
       );
     }
 
-    /*
-     * Resend verification code.
-     */
+    // ----------------------------------------
+    // RESEND BUTTON
+    // ----------------------------------------
+
+    const resendCodeBtn =
+      document.getElementById(
+        "resend-code-btn"
+      );
+
     if (resendCodeBtn) {
+
+      console.log(
+        "MAMIDAV: Resend button detected."
+      );
+
       resendCodeBtn.addEventListener(
         "click",
-        () => {
+        (event) => {
+
+          event.preventDefault();
+
           void resendSignupCode();
         }
       );
     }
 
-    /*
-     * Signup -> payments redirect support.
-     */
+    // ----------------------------------------
+    // SIGNUP -> PAYMENTS REDIRECT
+    // ----------------------------------------
+
     const signupLink =
       document.getElementById(
         "signup-link"
@@ -1372,13 +1805,15 @@ document.addEventListener(
       signupLink &&
       next === "payments.html"
     ) {
+
       signupLink.href =
         "signup.html?next=payments.html";
     }
 
-    /*
-     * Check current login session.
-     */
+    // ----------------------------------------
+    // SESSION
+    // ----------------------------------------
+
     await checkSession();
 
     if (
@@ -1386,6 +1821,7 @@ document.addEventListener(
         "true" &&
       !currentUser
     ) {
+
       window.location.href =
         "login.html";
 
@@ -1395,6 +1831,10 @@ document.addEventListener(
     renderProfilePage();
 
     await loadCart();
+
+    console.log(
+      "MAMIDAV: DOM initialization completed."
+    );
   }
 );
 
@@ -1434,7 +1874,8 @@ document.addEventListener(
         }
       );
 
-      nav.querySelectorAll("a")
+      nav
+        .querySelectorAll("a")
         .forEach((a) => {
 
           a.addEventListener(
@@ -1451,13 +1892,13 @@ document.addEventListener(
               );
             }
           );
-
         });
     }
 
-    /*
-     * Active navigation item.
-     */
+    // ----------------------------------------
+    // Active navigation item
+    // ----------------------------------------
+
     const page =
       location.pathname
         .split("/")
@@ -1471,8 +1912,11 @@ document.addEventListener(
       .forEach((a) => {
 
         const href =
-          (a.getAttribute("href") || "")
-            .split("#")[0];
+          (
+            a.getAttribute(
+              "href"
+            ) || ""
+          ).split("#")[0];
 
         if (
           href === page &&
@@ -1480,15 +1924,17 @@ document.addEventListener(
             "cart-link"
           )
         ) {
+
           a.classList.add(
             "active"
           );
         }
       });
 
-    /*
-     * Reveal animation.
-     */
+    // ----------------------------------------
+    // Reveal animation
+    // ----------------------------------------
+
     const revealEls =
       document.querySelectorAll(
         ".reveal"
@@ -1501,63 +1947,75 @@ document.addEventListener(
       ).matches;
 
     if (
-      !("IntersectionObserver" in window) ||
+      !(
+        "IntersectionObserver" in
+        window
+      ) ||
       prefersReducedMotion
     ) {
 
-      revealEls.forEach((el) => {
-        el.classList.add(
-          "visible"
-        );
-      });
+      revealEls.forEach(
+        (el) => {
 
-    } else {
-
-      revealEls.forEach((el) => {
-
-        const obs =
-          new IntersectionObserver(
-            (entries) => {
-
-              entries.forEach(
-                (entry) => {
-
-                  if (
-                    entry.isIntersecting
-                  ) {
-
-                    entry.target.classList.add(
-                      "visible"
-                    );
-
-                    obs.unobserve(
-                      entry.target
-                    );
-                  }
-                }
-              );
-
-            },
-            {
-              threshold: 0.12
-            }
-          );
-
-        obs.observe(el);
-      });
-
-      /*
-       * Safety net.
-       */
-      setTimeout(() => {
-
-        revealEls.forEach((el) => {
           el.classList.add(
             "visible"
           );
-        });
+        }
+      );
 
-      }, 2000);
+    } else {
+
+      revealEls.forEach(
+        (el) => {
+
+          const obs =
+            new IntersectionObserver(
+              (entries) => {
+
+                entries.forEach(
+                  (entry) => {
+
+                    if (
+                      entry.isIntersecting
+                    ) {
+
+                      entry.target.classList.add(
+                        "visible"
+                      );
+
+                      obs.unobserve(
+                        entry.target
+                      );
+                    }
+                  }
+                );
+
+              },
+              {
+                threshold: 0.12
+              }
+            );
+
+          obs.observe(el);
+        }
+      );
+
+      // Safety net
+      setTimeout(
+        () => {
+
+          revealEls.forEach(
+            (el) => {
+
+              el.classList.add(
+                "visible"
+              );
+            }
+          );
+
+        },
+        2000
+      );
     }
   }
 );
