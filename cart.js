@@ -1,3 +1,5 @@
+console.log("MAMIDAV CART.JS LOADED - VERSION 2026-08-13");
+
 const MAMIDAV_ORDER_EMAIL = "mail@mamidavintltd.com";
 const MAMIDAV_LOCAL_CART_KEY = "mamidav_cart";
 const API_BASE = "/api/";
