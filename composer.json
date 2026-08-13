@@ -1,0 +1,7 @@
+{
+  "name": "mamidavintltd/website",
+  "description": "Mamidav International Limited website dependencies",
+  "require": {
+    "phpmailer/phpmailer": "^6.8"
+  }
+}

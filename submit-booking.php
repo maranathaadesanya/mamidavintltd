@@ -109,28 +109,91 @@ $body_lines[] = "Additional Requirements:";
 $body_lines[] = $message ?: '-';
 
 $body_admin = implode("\n", $body_lines);
+$body_admin = implode("\n", $body_lines);
 
-// Headers (prevent header injection)
+// Prepare sanitized values
 $safe_reply_to = sanitize_header($email);
 $safe_name = sanitize_header($full_name);
-$from_address = 'no-reply@mamidavintltd.com';
-$headers = [];
-$headers[] = 'From: Mamidav Website <' . $from_address . '>';
-if ($safe_reply_to) $headers[] = 'Reply-To: ' . $safe_reply_to;
-$headers[] = 'MIME-Version: 1.0';
-$headers[] = 'Content-Type: text/plain; charset=UTF-8';
 
-$mail_ok = @mail($business_email, $subject_admin, $body_admin, implode("\r\n", $headers));
+// Load PHPMailer via Composer if available
+$composerAutoload = __DIR__ . '/vendor/autoload.php';
+if (!file_exists($composerAutoload)) {
+    // Composer dependencies not installed; ask admin to run composer install
+    $_SESSION['booking_old'] = $_POST;
+    $_SESSION['booking_errors'] = ['Mail service not configured. Please run `composer install` on the server to install PHPMailer.'];
+    header('Location: book-us.php');
+    exit;
+}
+require_once $composerAutoload;
 
-if (!$mail_ok) {
-    // Try to fall back: store error and redirect back
+// Load SMTP config from environment or local config file
+$smtpHost = getenv('SMTP_HOST') ?: null;
+$smtpPort = getenv('SMTP_PORT') ?: null;
+$smtpUser = getenv('SMTP_USER') ?: null;
+$smtpPass = getenv('SMTP_PASS') ?: null;
+$smtpSecure = getenv('SMTP_SECURE') ?: null;
+$mailFromAddress = getenv('MAIL_FROM_ADDRESS') ?: null;
+$mailFromName = getenv('MAIL_FROM_NAME') ?: null;
+
+if (file_exists(__DIR__ . '/api/email_config.local.php')) {
+    include __DIR__ . '/api/email_config.local.php';
+    if (defined('SMTP_HOST') && !$smtpHost) $smtpHost = SMTP_HOST;
+    if (defined('SMTP_PORT') && !$smtpPort) $smtpPort = SMTP_PORT;
+    if (defined('SMTP_USER') && !$smtpUser) $smtpUser = SMTP_USER;
+    if (defined('SMTP_PASS') && !$smtpPass) $smtpPass = SMTP_PASS;
+    if (defined('SMTP_SECURE') && !$smtpSecure) $smtpSecure = SMTP_SECURE;
+    if (defined('MAIL_FROM_ADDRESS') && !$mailFromAddress) $mailFromAddress = MAIL_FROM_ADDRESS;
+    if (defined('MAIL_FROM_NAME') && !$mailFromName) $mailFromName = MAIL_FROM_NAME;
+}
+
+// Fallback defaults
+$smtpHost = $smtpHost ?: 'smtp.hostinger.com';
+$smtpPort = $smtpPort ?: 587;
+$smtpUser = $smtpUser ?: 'no-reply@mamidavintltd.com';
+$smtpSecure = $smtpSecure ?: 'tls';
+$mailFromAddress = $mailFromAddress ?: 'no-reply@mamidavintltd.com';
+$mailFromName = $mailFromName ?: 'Mamidav Website';
+
+// SMTP password must be provided either via env or api/email_config.local.php
+if (empty($smtpPass)) {
+    $_SESSION['booking_old'] = $_POST;
+    $_SESSION['booking_errors'] = ['SMTP password not configured. Please set SMTP_PASS environment variable or create api/email_config.local.php with SMTP_PASS.'];
+    header('Location: book-us.php');
+    exit;
+}
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+// Send admin notification via SMTP
+try {
+    $mail = new PHPMailer(true);
+    $mail->isSMTP();
+    $mail->Host = $smtpHost;
+    $mail->SMTPAuth = true;
+    $mail->Username = $smtpUser;
+    $mail->Password = $smtpPass;
+    $mail->SMTPSecure = $smtpSecure;
+    $mail->Port = (int)$smtpPort;
+    $mail->setFrom($mailFromAddress, $mailFromName);
+    $mail->addAddress($business_email);
+    if ($safe_reply_to && filter_var($safe_reply_to, FILTER_VALIDATE_EMAIL)) {
+        $mail->addReplyTo($safe_reply_to);
+    }
+    $mail->Subject = $subject_admin;
+    $mail->Body = $body_admin;
+    $mail->isHTML(false);
+    $mail_ok = $mail->send();
+} catch (Exception $e) {
+    // On failure, preserve data and show friendly error
     $_SESSION['booking_old'] = $_POST;
     $_SESSION['booking_errors'] = ['Failed to send booking notification. Please try again later.'];
     header('Location: book-us.php');
     exit;
 }
 
-// Send confirmation to customer
+// Send confirmation to customer (best-effort)
 $subject_cust = "Your Mamidav booking request has been received — $ref";
 $cust_lines = [];
 $cust_lines[] = "Hello $safe_name,";
@@ -146,9 +209,24 @@ $cust_lines[] = "";
 $cust_lines[] = "Thank you,\nMamidav International Limited";
 
 $body_cust = implode("\n", $cust_lines);
-
-// mail() may fail silently; ignore result but continue to success page
-@mail($email, $subject_cust, $body_cust, implode("\r\n", $headers));
+try {
+    $custMail = new PHPMailer(true);
+    $custMail->isSMTP();
+    $custMail->Host = $smtpHost;
+    $custMail->SMTPAuth = true;
+    $custMail->Username = $smtpUser;
+    $custMail->Password = $smtpPass;
+    $custMail->SMTPSecure = $smtpSecure;
+    $custMail->Port = (int)$smtpPort;
+    $custMail->setFrom($mailFromAddress, $mailFromName);
+    $custMail->addAddress($email);
+    $custMail->Subject = $subject_cust;
+    $custMail->Body = $body_cust;
+    $custMail->isHTML(false);
+    @$custMail->send();
+} catch (Exception $e) {
+    // ignore customer mail failures
+}
 
 // On success, clear any old data and redirect to confirmation
 unset($_SESSION['booking_old']);
