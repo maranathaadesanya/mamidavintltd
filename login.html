@@ -14,7 +14,12 @@
 <p id="form-error" style="color:#a33;font-size:13px;margin:0"></p>
 <p id="form-success" style="color:#0a4d32;font-size:13px;margin:0"></p>
 <label>Email<input type="email" name="email" required></label>
-<label>Password<input type="password" name="password" required></label>
+<input
+  type="password"
+  name="password"
+  autocomplete="current-password"
+  required
+>
 <button type="submit" class="btn">Log In</button>
 <p class="form-note">Don't have an account yet? <a id="signup-link" href="signup.html" style="color:#3e0303">Sign up</a></p>
 </form>
