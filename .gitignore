@@ -1,1 +1,6 @@
 api/config.local.php
+# Local SMTP credentials
+api/email_config.local.php
+
+# Composer dependencies
+/vendor/
