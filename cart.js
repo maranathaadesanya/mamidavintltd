@@ -149,25 +149,14 @@ function renderCartTable() {
 
 function placeOrder() {
   if (cartState.length === 0) return;
-  const lines = cartState.map((item) => `- ${item.name} x${item.qty} = ${formatNaira(item.price * item.qty)}`);
-  const body = [
-    "Hello Mamidav International Limited,",
-    "",
-    "I would like to place the following order:",
-    "",
-    ...lines,
-    "",
-    "Total: " + formatNaira(cartTotal()),
-    "",
-    "My contact details:",
-    "Name: " + (currentUser ? currentUser.full_name : ""),
-    "Phone: " + (currentUser ? (currentUser.phone || "") : ""),
-    "Delivery/Pickup address:",
-  ].join("\n");
-  const mailto = "mailto:" + MAMIDAV_ORDER_EMAIL +
-    "?subject=" + encodeURIComponent("New Order from mamidavintltd.com") +
-    "&body=" + encodeURIComponent(body);
-  window.location.href = mailto;
+  // If user is logged in, proceed to payments page
+  if (currentUser) {
+    window.location.href = "payments.html";
+    return;
+  }
+  // Not logged in: redirect to login and preserve checkout intent via `next`
+  const next = encodeURIComponent('payments.html');
+  window.location.href = `login.html?next=${next}`;
 }
 
 function requestPayment(method) {
@@ -209,11 +198,68 @@ function renderAuthNav() {
     span.className = "auth-nav";
     if (currentUser) {
       const firstName = escapeHtml((currentUser.full_name || "").split(" ")[0] || "Account");
-      span.innerHTML = `<a href="profile.html">Hi, ${firstName}</a> <a href="#" onclick="doLogout();return false;">Logout</a>`;
+      span.innerHTML = `
+        <div class="account-control">
+          <button class="account-btn" type="button" aria-expanded="false">👤 ${firstName} ▾</button>
+          <div class="account-menu" hidden>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="profile.html">Profile</a>
+            <a href="#" onclick="doLogout();return false;">Logout</a>
+          </div>
+        </div>
+      `;
     } else {
-      span.innerHTML = `<a href="login.html">Login</a> <a href="signup.html">Sign Up</a>`;
+      span.innerHTML = `<a href="login.html">Login</a>`;
     }
     nav.appendChild(span);
+
+    // Wire up account menu toggle if present
+    const accBtn = span.querySelector('.account-btn');
+    const accMenu = span.querySelector('.account-menu');
+    if (accBtn && accMenu) {
+      accBtn.addEventListener('click', (e) => {
+        const open = accMenu.hidden;
+        accMenu.hidden = !open;
+        accBtn.setAttribute('aria-expanded', String(open));
+      });
+      document.addEventListener('click', (e) => {
+        if (!span.contains(e.target)) {
+          accMenu.hidden = true;
+          if (accBtn) accBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+  });
+}
+
+// Replace textual Cart link with an accessible SVG icon where present
+function renderCartIcons() {
+  const svgNS = 'http://www.w3.org/2000/svg';
+  document.querySelectorAll('.cart-link').forEach(a => {
+    if (a.querySelector('.cart-icon')) return;
+    a.setAttribute('aria-label', 'Cart');
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('class', 'cart-icon');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '1.6');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.setAttribute('aria-hidden', 'true');
+    const path = document.createElementNS(svgNS, 'path');
+    path.setAttribute('d', 'M6 6h15l-1.5 9h-12z');
+    const c1 = document.createElementNS(svgNS, 'circle'); c1.setAttribute('cx','9'); c1.setAttribute('cy','20'); c1.setAttribute('r','1');
+    const c2 = document.createElementNS(svgNS, 'circle'); c2.setAttribute('cx','18'); c2.setAttribute('cy','20'); c2.setAttribute('r','1');
+    svg.appendChild(path); svg.appendChild(c1); svg.appendChild(c2);
+    const sr = document.createElement('span'); sr.className = 'sr-only'; sr.textContent = 'Cart';
+    const badge = a.querySelector('.cart-badge');
+    a.insertBefore(svg, badge);
+    a.insertBefore(sr, badge);
+    // remove plain 'Cart' text if present
+    a.childNodes.forEach(n => {
+      if (n.nodeType === Node.TEXT_NODE && n.textContent.trim() === 'Cart') n.textContent = '';
+    });
   });
 }
 
@@ -255,7 +301,18 @@ async function doSignup(form) {
   }
   currentUser = res;
   await mergeGuestCartIfAny();
-  window.location.href = "profile.html";
+  // Resume any intended redirect after authentication
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get('next');
+    if (next && !next.includes('://')) {
+      window.location.href = next;
+    } else {
+      window.location.href = "dashboard.html";
+    }
+  } catch (e) {
+    window.location.href = "dashboard.html";
+  }
   return false;
 }
 
@@ -273,7 +330,18 @@ async function doLogin(form) {
   }
   currentUser = res;
   await mergeGuestCartIfAny();
-  window.location.href = "profile.html";
+  // Resume any intended redirect after signup
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get('next');
+    if (next && !next.includes('://')) {
+      window.location.href = next;
+    } else {
+      window.location.href = "dashboard.html";
+    }
+  } catch (e) {
+    window.location.href = "dashboard.html";
+  }
   return false;
 }
 
@@ -329,6 +397,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+  renderCartIcons();
   const toggle = document.querySelector(".menu-toggle");
   const nav = document.querySelector("header nav");
   if (toggle && nav) {

@@ -2,7 +2,7 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Event Management Packages</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css"></head>
 <body>
 <div class="site-topbar"><div class="container"><span>Integrated Agribusiness, Engineering &amp; Services</span><span class="secondary">Nigeria <span class="accent">•</span> Reliable. Practical. Professional.</span></div></div>
-<header><div class="header-inner"><a href="index.html"><img src="logo.png" class="logo" alt="Mamidav International Limited logo"></a><div class="brand-title"><strong>Mamidav International Limited</strong><small>INTEGRATED SOLUTIONS &amp; SERVICES</small></div><button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span><span></span></button><nav aria-label="Main navigation"><a href="index.html">Home</a><a href="agriculture.html">Agriculture</a><a href="engineering.html">Engineering</a><a href="services.html">Services</a><a href="investors.html">Investors</a><a href="dashboard.html">Dashboard</a><a href="contact.html">Contact</a><a href="cart.html" class="cart-link">Cart<span class="cart-badge">0</span></a></nav></div></header>
+<header><div class="header-inner"><a href="index.html"><img src="logo.png" class="logo" alt="Mamidav International Limited logo"></a><div class="brand-title"><strong>Mamidav International Limited</strong><small>INTEGRATED SOLUTIONS &amp; SERVICES</small></div><button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span><span></span></button><nav aria-label="Main navigation"><a href="index.html">Home</a><a href="services.html">Services</a><a href="investors.html">Investors</a><a href="contact.html">Contact Us</a><a href="cart.html" class="cart-link">Cart<span class="cart-badge">0</span></a></nav></div></header>
 
 <div class="page-intro">
 <h2>Event Management Packages</h2>
@@ -12,17 +12,17 @@
 <div class="container">
 <div class="tiers">
 
-<div class="tier">
+<a class="tier" href="basic-event-package.html">
 <div class="tier-name">Basic</div>
 <div class="tier-price">₦150,000</div>
 <ul>
 <li>Event day coordination</li>
 <li>Vendor liaison</li>
-<li>Setup & breakdown supervision</li>
+<li>Setup &amp; breakdown supervision</li>
 </ul>
-</div>
+</a>
 
-<div class="tier featured">
+<a class="tier featured" href="standard-event-package.html">
 <div class="tier-name">Standard</div>
 <div class="tier-price">₦350,000</div>
 <ul>
@@ -31,41 +31,40 @@
 <li>Decor coordination</li>
 <li>Dedicated event lead</li>
 </ul>
-</div>
+</a>
 
-<div class="tier">
+<a class="tier" href="premium-event-package.html">
 <div class="tier-name">Premium</div>
 <div class="tier-price">₦750,000</div>
 <ul>
 <li>Everything in Standard</li>
-<li>Guest management & RSVP tracking</li>
+<li>Guest management &amp; RSVP tracking</li>
 <li>On-site team for full duration</li>
 <li>Post-event report</li>
 </ul>
-</div>
+</a>
 
 </div>
 
-<form class="form-card" onsubmit="return submitInquiry(this, 'Event Management Booking')">
-<label>Full Name<input type="text" name="Full Name" required></label>
-<label>Email<input type="email" name="Email" required></label>
-<label>Phone<input type="tel" name="Phone" required></label>
-<label>Package
-<select name="Package">
-<option>Basic</option>
-<option selected>Standard</option>
-<option>Premium</option>
-<option>Not sure yet</option>
-</select>
-</label>
-<label>Event Type<input type="text" name="Event Type" placeholder="e.g. Wedding, Birthday, Corporate"></label>
-<label>Event Date<input type="date" name="Event Date"></label>
-<label>Message<textarea name="Message" placeholder="Tell us more about your event"></textarea></label>
-<button type="submit" class="btn">Book Us</button>
-<p class="form-note">This opens your email app with the details filled in — just hit send.</p>
-</form>
+<!-- Booking moved to central page: book-us.php — inline form removed -->
+
+<p style="margin-top:18px;margin-bottom:28px"><a class="btn" href="book-us.php">Book any package</a></p>
 </div>
+
+<section class="identity-profile container">
+	<div class="profile-grid">
+		<img src="logo.png" alt="Events Lead" class="profile-pic">
+		<div class="profile-text">
+			<h3>Ms. Lara Mensah — Head of Events & Experiences</h3>
+			<p><strong>Core competence:</strong> Event planning, vendor management, guest experience design.</p>
+			<p><strong>Personality & working style:</strong> Highly organised, relationship-first, creative problem-solver.</p>
+			<p><strong>How they help you decide:</strong> Guides on package selection, logistics and vendor coordination to match your event goals.</p>
+			<p><strong>Credibility:</strong> Extensive track record delivering corporate and private events across the region.</p>
+		</div>
+	</div>
+</section>
 
 <footer class="site-footer"><div class="container footer-grid"><div class="footer-brand"><img src="logo.png" class="footer-logo" alt="Mamidav logo"><p>Integrated operational execution across agriculture, events, culinary services and power engineering.</p></div><div><h4>Company</h4><a href="index.html">Home</a><a href="agriculture.html">Agriculture</a><a href="engineering.html">Engineering</a><a href="services.html">Services</a></div><div><h4>Quick links</h4><a href="investors.html">Investors</a><a href="dashboard.html">Dashboard</a><a href="cart.html">Cart</a><a href="contact.html">Contact</a></div><div><h4>Contact</h4><a href="mailto:mail@mamidavintltd.com">mail@mamidavintltd.com</a><span>Monday – Saturday</span><span>Nigeria</span></div></div><div class="container footer-bottom"><span>© 2026 Mamidav International Limited</span><span>Integrated solutions. Reliable execution.</span></div></footer>
-<script src="cart.js"></script>
+<script src="nav.js"></script>
+    <script src="cart.js"></script>
 </body></html>
