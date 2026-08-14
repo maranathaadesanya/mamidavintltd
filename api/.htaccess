@@ -7,3 +7,10 @@
     Deny from all
   </Files>
 </IfModule>
+
+# Prevent browsers from using stale JavaScript and CSS during development
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
