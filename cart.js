@@ -1751,34 +1751,6 @@ document.addEventListener(
       );
     }
 
-// ----------------------------------------
-// INVESTMENT INQUIRY FORM
-// ----------------------------------------
-
-const investmentForm =
-  document.getElementById(
-    "investment-form"
-  );
-
-if (investmentForm) {
-
-  console.log(
-    "MAMIDAV INVESTMENT FORM JS LOADED"
-  );
-
-  investmentForm.addEventListener(
-    "submit",
-    (event) => {
-
-      event.preventDefault();
-
-      submitInquiry(
-        investmentForm,
-        "Investment Inquiry - Mamidav International Limited"
-      );
-    }
-  );
-}
     // ----------------------------------------
     // VERIFICATION FORM
     // ----------------------------------------
