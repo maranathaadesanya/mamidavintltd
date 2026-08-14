@@ -1699,49 +1699,20 @@ document.addEventListener(
     // SIGNUP FORM
     // ----------------------------------------
 
-    const signupForm =
-      document.getElementById(
-        "signup-form"
-      );
+    const signupForm = document.getElementById("signup-form");
 
-    console.log(
-      "MAMIDAV: signupForm:",
-      signupForm
-    );
+if (signupForm) {
 
-    if (signupForm) {
+  signupForm.addEventListener("submit", (event) => {
 
-      console.log(
-        "MAMIDAV: Signup form detected."
-      );
+    event.preventDefault();
 
-      /*
-      * Connect the signup form's submit
-      * event to doSignup().
-      */
-      signupForm.addEventListener(
-        "submit",
-        (event) => {
+    void doSignup(signupForm);
 
-          event.preventDefault();
+  });
 
-          console.log(
-            "MAMIDAV: SIGNUP SUBMIT EVENT FIRED."
-          );
-
-          void doSignup(
-            signupForm
-          );
-        }
-      );
-
-      /*
-      * Make sure verification panel
-      * starts hidden.
-      */
-      hideVerificationPanel();
-
-    }
+  hideVerificationPanel();
+}
 
     // ----------------------------------------
     // VERIFICATION FORM
