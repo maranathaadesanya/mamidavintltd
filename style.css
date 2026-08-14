@@ -230,6 +230,48 @@ nav .cart-link:hover{
   margin-left:4px;
 }
 
+/* =========================================================
+   MOBILE MENU TOGGLE
+   ========================================================= */
+
+.menu-toggle{
+  display:none;
+
+  width:44px;
+  height:44px;
+
+  padding:8px;
+
+  margin-left:auto;
+
+  border:0;
+  border-radius:8px;
+
+  background:transparent;
+  color:var(--burgundy);
+
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+
+  cursor:pointer;
+
+  position:relative;
+  z-index:1005;
+}
+
+.menu-toggle span{
+  display:block;
+
+  width:25px;
+  height:2px;
+
+  margin:3px 0;
+
+  background:var(--burgundy);
+
+  border-radius:2px;
+}
 
 /* =========================================================
    ACCOUNT DROPDOWN
