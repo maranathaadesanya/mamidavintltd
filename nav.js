@@ -30,5 +30,27 @@ document.addEventListener('DOMContentLoaded', function() {
   makeCardsClickable('.pillar-card');
   makeCardsClickable('.card');
 
-  console.log("MAMIDAV INVESTMENT FORM JS LOADED"); 
+  console.log("MAMIDAV INVESTMENT FORM JS LOADED");
+
+});
+document.querySelectorAll('.copy-email').forEach(link => {
+  link.addEventListener('click', async function (event) {
+    event.preventDefault();
+
+    const email = this.dataset.email;
+    const originalText = this.textContent;
+
+    try {
+      await navigator.clipboard.writeText(email);
+
+      this.textContent = 'Copied!';
+
+      setTimeout(() => {
+        this.textContent = originalText;
+      }, 1500);
+
+    } catch (error) {
+      console.error('Failed to copy email:', error);
+    }
+  });
 });
