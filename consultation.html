@@ -150,7 +150,21 @@
                     placeholder="Location, scope, timeline, etc."
                 ></textarea>
             </label>
-
+            <!-- Honeypot field - hidden from normal users -->
+            <div
+                style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;"
+                aria-hidden="true"
+            >
+                <label>
+                    Website
+                    <input
+                        type="text"
+                        name="website"
+                        tabindex="-1"
+                        autocomplete="off"
+                    >
+                </label>
+            </div>
 
             <!-- FORM STATUS MESSAGE -->
             <div
@@ -308,6 +322,5 @@
     <script src="nav.js"></script>
     <script src="cart.js"></script>
     <script src="engineering.js"></script>
-
 </body>
 </html>

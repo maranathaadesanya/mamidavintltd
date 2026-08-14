@@ -1,70 +1,256 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("engineering-form");
-    const message = document.getElementById("engineering-form-message");
+console.log(
+  "MAMIDAV ENGINEERING.JS LOADED - VERSION 2026-08-14-1"
+);
 
-    if (!form) return;
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
 
-    form.addEventListener("submit", async (event) => {
+    const engineeringForm =
+      document.getElementById(
+        "engineering-form"
+      );
+
+    console.log(
+      "MAMIDAV: Engineering form found:",
+      !!engineeringForm
+    );
+
+    if (!engineeringForm) {
+      return;
+    }
+
+    engineeringForm.addEventListener(
+      "submit",
+      async (event) => {
+
         event.preventDefault();
 
-        const submitButton = form.querySelector('button[type="submit"]');
+        const submitButton =
+          engineeringForm.querySelector(
+            'button[type="submit"]'
+          );
+
+        const statusMessage =
+          document.getElementById(
+            "engineering-form-message"
+          );
+
+        // ----------------------------------------
+        // Prevent duplicate submissions
+        // ----------------------------------------
+
+        if (
+          submitButton &&
+          submitButton.disabled
+        ) {
+          return;
+        }
+
+        // ----------------------------------------
+        // Clear previous status
+        // ----------------------------------------
+
+        if (statusMessage) {
+
+          statusMessage.textContent =
+            "";
+
+          statusMessage.className =
+            "form-message";
+        }
+
+        // ----------------------------------------
+        // Disable button
+        // ----------------------------------------
 
         if (submitButton) {
-            submitButton.disabled = true;
-            submitButton.textContent = "Sending...";
+
+          submitButton.disabled =
+            true;
+
+          submitButton.dataset.originalText =
+            submitButton.innerHTML;
+
+          submitButton.innerHTML =
+            "Sending Request...";
         }
 
-        if (message) {
-            message.textContent = "";
-            message.className = "form-message";
-        }
+        // ----------------------------------------
+        // Collect form data
+        // ----------------------------------------
 
-        const formData = new FormData(form);
+        const formData =
+          new FormData(
+            engineeringForm
+          );
 
-        const data = Object.fromEntries(formData.entries());
+        const payload = {
+
+          full_name:
+            (
+              formData.get(
+                "Full Name"
+              ) || ""
+            ).toString().trim(),
+
+          company:
+            (
+              formData.get(
+                "Company"
+              ) || ""
+            ).toString().trim(),
+
+          email:
+            (
+              formData.get(
+                "Email"
+              ) || ""
+            ).toString().trim(),
+
+          phone:
+            (
+              formData.get(
+                "Phone"
+              ) || ""
+            ).toString().trim(),
+
+          project_type:
+            (
+              formData.get(
+                "Project Type"
+              ) || ""
+            ).toString().trim(),
+
+          project_description:
+            (
+              formData.get(
+                "Project Description"
+              ) || ""
+            ).toString().trim(),
+
+          // Honeypot
+          website:
+            (
+              formData.get(
+                "website"
+              ) || ""
+            ).toString().trim()
+        };
+
+        console.log(
+          "MAMIDAV: Engineering consultation payload prepared."
+        );
+
+        // ----------------------------------------
+        // Send to PHP API
+        // ----------------------------------------
 
         try {
-            const response = await fetch("api/engineering_consultation.php", {
+
+          const response =
+            await fetch(
+              "api/engineering_consultation.php",
+              {
                 method: "POST",
+
                 headers: {
-                    "Content-Type": "application/json"
+                  "Content-Type":
+                    "application/json",
+
+                  "Accept":
+                    "application/json"
                 },
-                body: JSON.stringify(data)
-            });
 
-            const result = await response.json();
+                body:
+                  JSON.stringify(
+                    payload
+                  )
+              }
+            );
 
-            if (result.success) {
-                if (message) {
-                    message.textContent =
-                        result.message ||
-                        "Your consultation request has been sent successfully.";
-                    message.className = "form-message success";
-                }
+          const result =
+            await response.json()
+              .catch(
+                () => null
+              );
 
-                form.reset();
-            } else {
-                throw new Error(
-                    result.message ||
-                    "Unable to send your consultation request."
-                );
-            }
+          console.log(
+            "MAMIDAV: Engineering API response:",
+            result
+          );
+
+          // --------------------------------------
+          // Server error
+          // --------------------------------------
+
+          if (
+            !response.ok ||
+            !result ||
+            result.success !== true
+          ) {
+
+            throw new Error(
+              (
+                result &&
+                result.error
+              ) ||
+              "Unable to submit your consultation request."
+            );
+          }
+
+          // --------------------------------------
+          // Success
+          // --------------------------------------
+
+          if (statusMessage) {
+
+            statusMessage.textContent =
+              result.message ||
+              "Your consultation request has been submitted successfully. Our team will contact you shortly.";
+
+            statusMessage.className =
+              "form-message success";
+          }
+
+          // Clear form
+
+          engineeringForm.reset();
 
         } catch (error) {
-            console.error("Engineering consultation error:", error);
 
-            if (message) {
-                message.textContent =
-                    error.message ||
-                    "Something went wrong. Please try again later.";
-                message.className = "form-message error";
-            }
+          console.error(
+            "MAMIDAV: Engineering consultation error:",
+            error
+          );
+
+          if (statusMessage) {
+
+            statusMessage.textContent =
+              error.message ||
+              "We could not submit your consultation request. Please try again.";
+
+            statusMessage.className =
+              "form-message error";
+          }
 
         } finally {
-            if (submitButton) {
-                submitButton.disabled = false;
-                submitButton.textContent = "Request Consultation";
-            }
+
+          // --------------------------------------
+          // Restore button
+          // --------------------------------------
+
+          if (submitButton) {
+
+            submitButton.disabled =
+              false;
+
+            submitButton.innerHTML =
+              submitButton.dataset.originalText ||
+              "Request Consultation";
+          }
         }
-    });
-});
+      }
+    );
+  }
+);

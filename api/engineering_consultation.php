@@ -1,170 +1,465 @@
 <?php
 
+declare(strict_types=1);
+
 header('Content-Type: application/json; charset=UTF-8');
 
+// --------------------------------------------------
+// Configuration
+// --------------------------------------------------
+
+$recipientEmail = 'mail@mamidavintltd.com';
+$siteName       = 'Mamidav International Limited';
+$siteDomain     = 'mamidavintltd.com';
+
+// --------------------------------------------------
+// Only allow POST requests
+// --------------------------------------------------
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
     http_response_code(405);
 
     echo json_encode([
         'success' => false,
-        'message' => 'Invalid request method.'
+        'error'   => 'Method not allowed.'
     ]);
 
     exit;
 }
 
+// --------------------------------------------------
+// Read JSON request
+// --------------------------------------------------
+
 $rawInput = file_get_contents('php://input');
 
-$data = json_decode($rawInput, true);
+if (
+    $rawInput === false ||
+    trim($rawInput) === ''
+) {
 
-if (!is_array($data)) {
     http_response_code(400);
 
     echo json_encode([
         'success' => false,
-        'message' => 'Invalid form data.'
+        'error'   => 'No form data was received.'
     ]);
 
     exit;
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| Get submitted fields
-|--------------------------------------------------------------------------
-*/
-
-$fullName = trim($data['Full Name'] ?? '');
-$company = trim($data['Company'] ?? '');
-$email = trim($data['Email'] ?? '');
-$phone = trim($data['Phone'] ?? '');
-$projectType = trim($data['Project Type'] ?? '');
-$projectDescription = trim($data['Project Description'] ?? '');
-
-
-/*
-|--------------------------------------------------------------------------
-| Validate required fields
-|--------------------------------------------------------------------------
-*/
-
-if ($fullName === '' || $email === '' || $phone === '') {
-    http_response_code(422);
-
-    echo json_encode([
-        'success' => false,
-        'message' => 'Please complete all required fields.'
-    ]);
-
-    exit;
-}
-
-
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    http_response_code(422);
-
-    echo json_encode([
-        'success' => false,
-        'message' => 'Please provide a valid email address.'
-    ]);
-
-    exit;
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| Email settings
-|--------------------------------------------------------------------------
-*/
-
-$recipient = 'mail@mamidavintltd.com';
-
-$subject = 'Engineering Consultation Request - Mamidav International Limited';
-
-
-/*
-|--------------------------------------------------------------------------
-| Build email
-|--------------------------------------------------------------------------
-*/
-
-$emailBody = "A new Engineering Consultation Request has been submitted.\n\n";
-
-$emailBody .= "FULL NAME\n";
-$emailBody .= $fullName . "\n\n";
-
-$emailBody .= "COMPANY\n";
-$emailBody .= ($company !== '' ? $company : 'Not provided') . "\n\n";
-
-$emailBody .= "EMAIL\n";
-$emailBody .= $email . "\n\n";
-
-$emailBody .= "PHONE\n";
-$emailBody .= $phone . "\n\n";
-
-$emailBody .= "PROJECT TYPE\n";
-$emailBody .= ($projectType !== '' ? $projectType : 'Not specified') . "\n\n";
-
-$emailBody .= "PROJECT DESCRIPTION\n";
-$emailBody .= ($projectDescription !== '' ? $projectDescription : 'Not provided') . "\n\n";
-
-$emailBody .= "----------------------------------------\n";
-$emailBody .= "Mamidav International Limited\n";
-$emailBody .= "Engineering Consultation Form\n";
-
-
-/*
-|--------------------------------------------------------------------------
-| Email headers
-|--------------------------------------------------------------------------
-*/
-
-$headers = [];
-
-$headers[] = 'From: Mamidav International Limited <mail@mamidavintltd.com>';
-$headers[] = 'Reply-To: ' . $email;
-$headers[] = 'MIME-Version: 1.0';
-$headers[] = 'Content-Type: text/plain; charset=UTF-8';
-
-
-/*
-|--------------------------------------------------------------------------
-| Send email
-|--------------------------------------------------------------------------
-*/
-
-$sent = mail(
-    $recipient,
-    $subject,
-    $emailBody,
-    implode("\r\n", $headers)
+$data = json_decode(
+    $rawInput,
+    true
 );
 
+if (!is_array($data)) {
 
-/*
-|--------------------------------------------------------------------------
-| Return response
-|--------------------------------------------------------------------------
-*/
+    http_response_code(400);
 
-if ($sent) {
+    echo json_encode([
+        'success' => false,
+        'error'   => 'Invalid request data.'
+    ]);
+
+    exit;
+}
+
+// --------------------------------------------------
+// Helper functions
+// --------------------------------------------------
+
+function cleanText(
+    $value,
+    int $maxLength = 500
+): string {
+
+    if (!is_string($value)) {
+        return '';
+    }
+
+    $value = trim($value);
+
+    // Remove null bytes
+    $value = str_replace(
+        "\0",
+        '',
+        $value
+    );
+
+    // Normalize line endings
+    $value = str_replace(
+        ["\r\n", "\r"],
+        "\n",
+        $value
+    );
+
+    if (
+        mb_strlen($value) >
+        $maxLength
+    ) {
+
+        $value =
+            mb_substr(
+                $value,
+                0,
+                $maxLength
+            );
+    }
+
+    return $value;
+}
+
+function cleanHeaderValue(
+    $value
+): string {
+
+    $value =
+        cleanText(
+            $value,
+            200
+        );
+
+    // Prevent email header injection
+    $value =
+        str_replace(
+            ["\r", "\n"],
+            '',
+            $value
+        );
+
+    return $value;
+}
+
+// --------------------------------------------------
+// Get submitted fields
+// --------------------------------------------------
+
+$fullName =
+    cleanText(
+        $data['full_name'] ?? '',
+        150
+    );
+
+$company =
+    cleanText(
+        $data['company'] ?? '',
+        200
+    );
+
+$email =
+    cleanHeaderValue(
+        $data['email'] ?? ''
+    );
+
+$phone =
+    cleanText(
+        $data['phone'] ?? '',
+        50
+    );
+
+$projectType =
+    cleanText(
+        $data['project_type'] ?? '',
+        150
+    );
+
+$projectDescription =
+    cleanText(
+        $data['project_description'] ?? '',
+        4000
+    );
+
+// Honeypot
+$website =
+    cleanText(
+        $data['website'] ?? '',
+        100
+    );
+
+// --------------------------------------------------
+// Basic anti-bot honeypot
+// --------------------------------------------------
+
+if ($website !== '') {
 
     echo json_encode([
         'success' => true,
-        'message' => 'Your consultation request has been sent successfully. Mamidav International Limited will contact you shortly.'
+        'message' =>
+            'Your consultation request has been submitted successfully.'
     ]);
 
     exit;
 }
 
+// --------------------------------------------------
+// Validate required fields
+// --------------------------------------------------
 
-http_response_code(500);
+if ($fullName === '') {
+
+    http_response_code(422);
+
+    echo json_encode([
+        'success' => false,
+        'error'   =>
+            'Please enter your full name.'
+    ]);
+
+    exit;
+}
+
+if (
+    $email === '' ||
+    !filter_var(
+        $email,
+        FILTER_VALIDATE_EMAIL
+    )
+) {
+
+    http_response_code(422);
+
+    echo json_encode([
+        'success' => false,
+        'error'   =>
+            'Please enter a valid email address.'
+    ]);
+
+    exit;
+}
+
+if ($phone === '') {
+
+    http_response_code(422);
+
+    echo json_encode([
+        'success' => false,
+        'error'   =>
+            'Please enter your phone number.'
+    ]);
+
+    exit;
+}
+
+if ($projectType === '') {
+
+    http_response_code(422);
+
+    echo json_encode([
+        'success' => false,
+        'error'   =>
+            'Please select a project type.'
+    ]);
+
+    exit;
+}
+
+// --------------------------------------------------
+// Prepare email subject
+// --------------------------------------------------
+
+$subject =
+    'Engineering Consultation Request - ' .
+    $siteName;
+
+// --------------------------------------------------
+// Prepare email body
+// --------------------------------------------------
+
+$emailBody =
+
+    "Dear {$siteName},\n\n" .
+
+    "A new engineering consultation request has been submitted through the website.\n\n" .
+
+    "ENGINEERING CONSULTATION DETAILS\n" .
+    "=================================\n\n" .
+
+    "Full Name: {$fullName}\n" .
+    "Company: " .
+    (
+        $company !== ''
+            ? $company
+            : 'Not provided'
+    ) .
+    "\n" .
+
+    "Email: {$email}\n" .
+
+    "Phone: {$phone}\n" .
+
+    "Project Type: {$projectType}\n\n" .
+
+    "PROJECT DESCRIPTION\n" .
+    "====================\n" .
+
+    (
+        $projectDescription !== ''
+            ? $projectDescription
+            : 'Not provided'
+    ) .
+
+    "\n\n" .
+
+    "----------------------------------------\n" .
+    "Submitted through {$siteDomain}\n" .
+    "----------------------------------------\n";
+
+// --------------------------------------------------
+// Email headers
+// --------------------------------------------------
+
+$headers = [];
+
+$headers[] =
+    'From: ' .
+    $siteName .
+    ' <' .
+    $recipientEmail .
+    '>';
+
+$headers[] =
+    'Reply-To: ' .
+    $email;
+
+$headers[] =
+    'MIME-Version: 1.0';
+
+$headers[] =
+    'Content-Type: text/plain; charset=UTF-8';
+
+$headers[] =
+    'X-Mailer: PHP/' .
+    phpversion();
+
+$headerString =
+    implode(
+        "\r\n",
+        $headers
+    );
+
+// --------------------------------------------------
+// Send email to Mamidav
+// --------------------------------------------------
+
+$sent = mail(
+    $recipientEmail,
+    $subject,
+    $emailBody,
+    $headerString
+);
+
+// --------------------------------------------------
+// Handle result
+// --------------------------------------------------
+
+if (!$sent) {
+
+    error_log(
+        'Mamidav engineering consultation email could not be sent.'
+    );
+
+    http_response_code(500);
+
+    echo json_encode([
+        'success' => false,
+        'error'   =>
+            'We could not send your consultation request at this time. Please try again later.'
+    ]);
+
+    exit;
+}
+
+// --------------------------------------------------
+// Automatic confirmation to customer
+// --------------------------------------------------
+
+$confirmationSubject =
+    'We Received Your Engineering Consultation Request - ' .
+    $siteName;
+
+$confirmationBody =
+
+    "Dear {$fullName},\n\n" .
+
+    "Thank you for contacting {$siteName} regarding your engineering project.\n\n" .
+
+    "We have successfully received your consultation request and our engineering team will review the information provided.\n\n" .
+
+    "YOUR REQUEST DETAILS\n" .
+    "----------------------------------------\n" .
+
+    "Project Type: {$projectType}\n" .
+
+    "Company: " .
+    (
+        $company !== ''
+            ? $company
+            : 'Not provided'
+    ) .
+
+    "\n" .
+
+    "----------------------------------------\n\n" .
+
+    "Our team will contact you using the email address or phone number you provided.\n\n" .
+
+    "Thank you for choosing {$siteName}.\n\n" .
+
+    "Kind regards,\n" .
+    "{$siteName}\n" .
+    "Website: https://{$siteDomain}";
+
+// --------------------------------------------------
+// Confirmation email headers
+// --------------------------------------------------
+
+$confirmationHeaders = [];
+
+$confirmationHeaders[] =
+    'From: ' .
+    $siteName .
+    ' <' .
+    $recipientEmail .
+    '>';
+
+$confirmationHeaders[] =
+    'Reply-To: ' .
+    $recipientEmail;
+
+$confirmationHeaders[] =
+    'MIME-Version: 1.0';
+
+$confirmationHeaders[] =
+    'Content-Type: text/plain; charset=UTF-8';
+
+$confirmationHeaders[] =
+    'X-Mailer: PHP/' .
+    phpversion();
+
+// --------------------------------------------------
+// Send confirmation email
+// --------------------------------------------------
+
+@mail(
+    $email,
+    $confirmationSubject,
+    $confirmationBody,
+    implode(
+        "\r\n",
+        $confirmationHeaders
+    )
+);
+
+// --------------------------------------------------
+// Success response
+// --------------------------------------------------
 
 echo json_encode([
-    'success' => false,
-    'message' => 'We could not send your consultation request at this time. Please try again later.'
+    'success' => true,
+    'message' =>
+        'Your consultation request has been submitted successfully. Our team will contact you shortly.'
 ]);
 
 exit;
