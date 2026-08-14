@@ -1,52 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Engineering Consultation</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css"></head>
+    <title>Engineering Consultation | Mamidav International Limited</title>
+
+    <link rel="icon" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
 <body>
-<div class="site-topbar"><div class="container"><span>Integrated Agribusiness, Engineering &amp; Services</span><span class="secondary">Nigeria <span class="accent">•</span> Reliable. Practical. Professional.</span></div></div>
-<header><div class="header-inner"><a href="index.html"><img src="logo.png" class="logo" alt="Mamidav International Limited logo"></a><div class="brand-title"><strong>Mamidav International Limited</strong><small>INTEGRATED SOLUTIONS &amp; SERVICES</small></div><button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span><span></span></button><nav aria-label="Main navigation"><a href="index.html">Home</a><a href="services.html">Services</a><a href="investors.html">Investors</a><a href="contact.html">Contact Us</a><a href="cart.html" class="cart-link">Cart<span class="cart-badge">0</span></a></nav></div></header>
 
-<div class="page-intro">
-<h2>Power Systems & Engineering Consultation</h2>
-<p>Control room construction, switchyards, electrical installations and power infrastructure projects. Tell us about your project and we'll follow up.</p>
-</div>
+    <!-- TOP BAR -->
+    <div class="site-topbar">
+        <div class="container">
+            <span>Integrated Agribusiness, Engineering &amp; Services</span>
 
-<div class="container">
-<form
-  class="form-card"
-  onsubmit="return submitInquiry(this, 'Investment Inquiry - Mamidav International Limited')"
->
-<label>Full Name<input type="text" name="Full Name" required></label>
-<label>Company (if applicable)<input type="text" name="Company"></label>
-<label>Email<input type="email" name="Email" required></label>
-<label>Phone<input type="tel" name="Phone" required></label>
-<label>Project Type
-<select name="Project Type">
-<option>Control Room Construction</option>
-<option>Switchyard Construction</option>
-<option>Electrical Installations</option>
-<option>Power Infrastructure Project</option>
-<option>Other</option>
-</select>
-</label>
-</div>
-<section class="identity-profile container">
-	<div class="profile-grid">
-		<img src="logo.png" alt="Head of Engineering" class="profile-pic">
-		<div class="profile-text">
-			<h3>Engr. Chukwu Emeka — Lead Consultant, Power Systems</h3>
-			<p><strong>Core competence:</strong> Power systems design, feasibility studies, technical specifications and site delivery oversight.</p>
-			<p><strong>Personality & working style:</strong> Analytical, safety-first, client-focused and solution-oriented.</p>
-			<p><strong>How they help you decide:</strong> Provides technical clarity, realistic timelines and risk-aware recommendations tailored to your site.</p>
-			<p><strong>Credibility:</strong> Seasoned engineer with infrastructure delivery experience and consultancy track record.</p>
-		</div>
-	</div>
-</section>
-<label>Project Description<textarea name="Project Description" placeholder="Location, scope, timeline, etc."></textarea></label>
-<button type="submit" class="btn">Request Consultation</button>
-<p class="form-note">This opens your email app with the details filled in — just hit send.</p>
-</form>
-</div>
+            <span class="secondary">
+                Nigeria
+                <span class="accent">•</span>
+                Reliable. Practical. Professional.
+            </span>
+        </div>
+    </div>
 
-<footer class="site-footer"><div class="container footer-grid"><div class="footer-brand"><img src="logo.png" class="footer-logo" alt="Mamidav logo"><p>Integrated operational execution across agriculture, events, culinary services and power engineering.</p></div><div><h4>Company</h4><a href="index.html">Home</a><a href="agriculture.html">Agriculture</a><a href="engineering.html">Engineering</a><a href="services.html">Services</a></div><div><h4>Quick links</h4><a href="investors.html">Investors</a><a href="dashboard.html">Dashboard</a><a href="cart.html">Cart</a><a href="contact.html">Contact</a></div><div><h4>Contact</h4><a href="mailto:mail@mamidavintltd.com">mail@mamidavintltd.com</a><span>Monday – Saturday</span><span>Nigeria</span></div></div><div class="container footer-bottom"><span>© 2026 Mamidav International Limited</span><span>Integrated solutions. Reliable execution.</span></div></footer>
-<script src="nav.js"></script>
-<script src="cart.js"></script>
-</body></html>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-inner">
+
+            <a href="index.html">
+                <img
+                    src="logo.png"
+                    class="logo"
+                    alt="Mamidav International Limited logo"
+                >
+            </a>
+
+            <div class="brand-title">
+                <strong>Mamidav International Limited</strong>
+                <small>INTEGRATED SOLUTIONS &amp; SERVICES</small>
+            </div>
+
+            <button
+                class="menu-toggle"
+                type="button"
+                aria-label="Open navigation"
+                aria-expanded="false"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav aria-label="Main navigation">
+                <a href="index.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="investors.html">Investors</a>
+                <a href="contact.html">Contact Us</a>
+
+                <a href="cart.html" class="cart-link">
+                    Cart
+                    <span class="cart-badge">0</span>
+                </a>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- PAGE INTRO -->
+    <div class="page-intro">
+        <h2>Power Systems &amp; Engineering Consultation</h2>
+
+        <p>
+            Control room construction, switchyards, electrical installations
+            and power infrastructure projects. Tell us about your project
+            and we'll follow up.
+        </p>
+    </div>
+
+
+    <!-- ENGINEERING FORM -->
+    <div class="container">
+
+        <form
+            class="form-card"
+            id="engineering-form"
+        >
+
+            <label>
+                Full Name
+                <input
+                    type="text"
+                    name="Full Name"
+                    required
+                >
+            </label>
+
+
+            <label>
+                Company (if applicable)
+                <input
+                    type="text"
+                    name="Company"
+                >
+            </label>
+
+
+            <label>
+                Email
+                <input
+                    type="email"
+                    name="Email"
+                    required
+                >
+            </label>
+
+
+            <label>
+                Phone
+                <input
+                    type="tel"
+                    name="Phone"
+                    required
+                >
+            </label>
+
+
+            <label>
+                Project Type
+
+                <select name="Project Type">
+                    <option>Control Room Construction</option>
+                    <option>Switchyard Construction</option>
+                    <option>Electrical Installations</option>
+                    <option>Power Infrastructure Project</option>
+                    <option>Other</option>
+                </select>
+            </label>
+
+
+            <label>
+                Project Description
+
+                <textarea
+                    name="Project Description"
+                    placeholder="Location, scope, timeline, etc."
+                ></textarea>
+            </label>
+
+
+            <!-- FORM STATUS MESSAGE -->
+            <div
+                id="engineering-form-message"
+                class="form-message"
+                aria-live="polite"
+            ></div>
+
+
+            <!-- SUBMIT BUTTON -->
+            <button
+                type="submit"
+                class="btn"
+            >
+                Request Consultation
+            </button>
+
+
+            <p class="form-note">
+                Your request will be sent directly to
+                Mamidav International Limited.
+            </p>
+
+        </form>
+
+    </div>
+
+
+    <!-- ENGINEERING PROFILE -->
+    <section class="identity-profile container">
+
+        <div class="profile-grid">
+
+            <img
+                src="logo.png"
+                alt="Head of Engineering"
+                class="profile-pic"
+            >
+
+            <div class="profile-text">
+
+                <h3>
+                    Engr. Chukwu Emeka —
+                    Lead Consultant, Power Systems
+                </h3>
+
+                <p>
+                    <strong>Core competence:</strong>
+                    Power systems design, feasibility studies,
+                    technical specifications and site delivery oversight.
+                </p>
+
+                <p>
+                    <strong>Personality &amp; working style:</strong>
+                    Analytical, safety-first, client-focused and
+                    solution-oriented.
+                </p>
+
+                <p>
+                    <strong>How they help you decide:</strong>
+                    Provides technical clarity, realistic timelines
+                    and risk-aware recommendations tailored to your site.
+                </p>
+
+                <p>
+                    <strong>Credibility:</strong>
+                    Seasoned engineer with infrastructure delivery
+                    experience and consultancy track record.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+
+        <div class="container footer-grid">
+
+            <div class="footer-brand">
+
+                <img
+                    src="logo.png"
+                    class="footer-logo"
+                    alt="Mamidav logo"
+                >
+
+                <p>
+                    Integrated operational execution across agriculture,
+                    events, culinary services and power engineering.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h4>Company</h4>
+
+                <a href="index.html">Home</a>
+                <a href="agriculture.html">Agriculture</a>
+                <a href="engineering.html">Engineering</a>
+                <a href="services.html">Services</a>
+
+            </div>
+
+
+            <div>
+
+                <h4>Quick links</h4>
+
+                <a href="investors.html">Investors</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="cart.html">Cart</a>
+                <a href="contact.html">Contact</a>
+
+            </div>
+
+
+            <div>
+
+                <h4>Contact</h4>
+
+                <a href="mailto:mail@mamidavintltd.com">
+                    mail@mamidavintltd.com
+                </a>
+
+                <span>Monday – Saturday</span>
+                <span>Nigeria</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="container footer-bottom">
+
+            <span>
+                © 2026 Mamidav International Limited
+            </span>
+
+            <span>
+                Integrated solutions. Reliable execution.
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="nav.js"></script>
+    <script src="cart.js"></script>
+
+</body>
+</html>

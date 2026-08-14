@@ -10,10 +10,137 @@
 </div>
 
 <div class="container">
-<form
-  class="form-card"
-  onsubmit="return submitInquiry(this, 'Investment Inquiry - Mamidav International Limited')"
->
+<div class="reveal delay-1">
+
+  <form
+    class="form-card investment-form"
+    novalidate
+  >
+
+    <label>
+      Full Name
+      <input
+        type="text"
+        name="Full Name"
+        autocomplete="name"
+        required
+      >
+    </label>
+
+    <label>
+      Email
+      <input
+        type="email"
+        name="Email"
+        autocomplete="email"
+        required
+      >
+    </label>
+
+    <label>
+      Phone
+      <input
+        type="tel"
+        name="Phone"
+        autocomplete="tel"
+        required
+      >
+    </label>
+
+    <label>
+      Area of Interest
+
+      <select
+        name="Area of Interest"
+        required
+      >
+        <option value="Pig Farming">
+          Pig Farming
+        </option>
+
+        <option value="Crop Farming">
+          Crop Farming
+        </option>
+
+        <option value="Garri Processing">
+          Garri Processing
+        </option>
+
+        <option value="Frozen Foods">
+          Frozen Foods
+        </option>
+
+        <option value="Not sure yet">
+          Not sure yet
+        </option>
+      </select>
+    </label>
+
+    <label>
+      Investment Amount (₦)
+
+      <input
+        type="number"
+        name="Investment Amount (NGN)"
+        min="0"
+        step="1000"
+        inputmode="numeric"
+      >
+    </label>
+
+    <label>
+      Message
+
+      <textarea
+        name="Message"
+        rows="5"
+        placeholder="Tell us anything else you would like us to know..."
+      ></textarea>
+    </label>
+
+    <!-- Honeypot anti-spam field -->
+    <div
+      aria-hidden="true"
+      style="
+        position:absolute;
+        left:-10000px;
+        width:1px;
+        height:1px;
+        overflow:hidden;
+      "
+    >
+      <label>
+        Website
+        <input
+          type="text"
+          name="website"
+          tabindex="-1"
+          autocomplete="off"
+        >
+      </label>
+    </div>
+
+    <button
+      type="submit"
+      class="btn"
+    >
+      Send Investment Inquiry
+      <span>→</span>
+    </button>
+
+    <p class="form-note">
+      Your inquiry will be sent securely to
+      Mamidav International Limited.
+    </p>
+
+    <p
+      class="form-status"
+      aria-live="polite"
+    ></p>
+
+  </form>
+
+</div>
 <label>Full Name<input type="text" name="Full Name" required></label>
 <label>Email<input type="email" name="Email" required></label>
 <label>Phone<input type="tel" name="Phone" required></label>
