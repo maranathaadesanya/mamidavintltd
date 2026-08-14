@@ -30,11 +30,5 @@ document.addEventListener('DOMContentLoaded', function() {
   makeCardsClickable('.pillar-card');
   makeCardsClickable('.card');
 
-  console.log("MAMIDAV INVESTMENT FORM JS LOADED");
-
-    const investmentForm = document.getElementById("investment-form");
-
-    if (!investmentForm) {
-        return;
-    }  
+  console.log("MAMIDAV INVESTMENT FORM JS LOADED"); 
 });
