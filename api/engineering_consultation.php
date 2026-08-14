@@ -34,10 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $rawInput = file_get_contents('php://input');
 
-if (
-    $rawInput === false ||
-    trim($rawInput) === ''
-) {
+if ($rawInput === false || trim($rawInput) === '') {
 
     http_response_code(400);
 
@@ -49,10 +46,7 @@ if (
     exit;
 }
 
-$data = json_decode(
-    $rawInput,
-    true
-);
+$data = json_decode($rawInput, true);
 
 if (!is_array($data)) {
 
@@ -70,11 +64,8 @@ if (!is_array($data)) {
 // Helper functions
 // --------------------------------------------------
 
-function cleanText(
-    $value,
-    int $maxLength = 500
-): string {
-
+function cleanText($value, int $maxLength = 500): string
+{
     if (!is_string($value)) {
         return '';
     }
@@ -82,11 +73,7 @@ function cleanText(
     $value = trim($value);
 
     // Remove null bytes
-    $value = str_replace(
-        "\0",
-        '',
-        $value
-    );
+    $value = str_replace("\0", '', $value);
 
     // Normalize line endings
     $value = str_replace(
@@ -95,39 +82,27 @@ function cleanText(
         $value
     );
 
-    if (
-        mb_strlen($value) >
-        $maxLength
-    ) {
-
-        $value =
-            mb_substr(
-                $value,
-                0,
-                $maxLength
-            );
+    if (mb_strlen($value) > $maxLength) {
+        $value = mb_substr(
+            $value,
+            0,
+            $maxLength
+        );
     }
 
     return $value;
 }
 
-function cleanHeaderValue(
-    $value
-): string {
-
-    $value =
-        cleanText(
-            $value,
-            200
-        );
+function cleanHeaderValue($value): string
+{
+    $value = cleanText($value, 200);
 
     // Prevent email header injection
-    $value =
-        str_replace(
-            ["\r", "\n"],
-            '',
-            $value
-        );
+    $value = str_replace(
+        ["\r", "\n"],
+        '',
+        $value
+    );
 
     return $value;
 }
@@ -136,47 +111,40 @@ function cleanHeaderValue(
 // Get submitted fields
 // --------------------------------------------------
 
-$fullName =
-    cleanText(
-        $data['full_name'] ?? '',
-        150
-    );
+$fullName = cleanText(
+    $data['full_name'] ?? '',
+    150
+);
 
-$company =
-    cleanText(
-        $data['company'] ?? '',
-        200
-    );
+$company = cleanText(
+    $data['company'] ?? '',
+    200
+);
 
-$email =
-    cleanHeaderValue(
-        $data['email'] ?? ''
-    );
+$email = cleanHeaderValue(
+    $data['email'] ?? ''
+);
 
-$phone =
-    cleanText(
-        $data['phone'] ?? '',
-        50
-    );
+$phone = cleanText(
+    $data['phone'] ?? '',
+    50
+);
 
-$projectType =
-    cleanText(
-        $data['project_type'] ?? '',
-        150
-    );
+$projectType = cleanText(
+    $data['project_type'] ?? '',
+    150
+);
 
-$projectDescription =
-    cleanText(
-        $data['project_description'] ?? '',
-        4000
-    );
+$projectDescription = cleanText(
+    $data['project_description'] ?? '',
+    4000
+);
 
 // Honeypot
-$website =
-    cleanText(
-        $data['website'] ?? '',
-        100
-    );
+$website = cleanText(
+    $data['website'] ?? '',
+    100
+);
 
 // --------------------------------------------------
 // Basic anti-bot honeypot
@@ -203,8 +171,7 @@ if ($fullName === '') {
 
     echo json_encode([
         'success' => false,
-        'error'   =>
-            'Please enter your full name.'
+        'error'   => 'Please enter your full name.'
     ]);
 
     exit;
@@ -222,8 +189,7 @@ if (
 
     echo json_encode([
         'success' => false,
-        'error'   =>
-            'Please enter a valid email address.'
+        'error'   => 'Please enter a valid email address.'
     ]);
 
     exit;
@@ -235,8 +201,7 @@ if ($phone === '') {
 
     echo json_encode([
         'success' => false,
-        'error'   =>
-            'Please enter your phone number.'
+        'error'   => 'Please enter your phone number.'
     ]);
 
     exit;
@@ -248,8 +213,7 @@ if ($projectType === '') {
 
     echo json_encode([
         'success' => false,
-        'error'   =>
-            'Please select a project type.'
+        'error'   => 'Please select a project type.'
     ]);
 
     exit;
@@ -278,21 +242,15 @@ $emailBody =
 
     "Full Name: {$fullName}\n" .
     "Company: " .
-    (
-        $company !== ''
-            ? $company
-            : 'Not provided'
-    ) .
+    ($company !== '' ? $company : 'Not provided') .
     "\n" .
 
     "Email: {$email}\n" .
-
     "Phone: {$phone}\n" .
-
     "Project Type: {$projectType}\n\n" .
 
     "PROJECT DESCRIPTION\n" .
-    "====================\n" .
+    "===================\n" .
 
     (
         $projectDescription !== ''
@@ -364,7 +322,7 @@ if (!$sent) {
 
     echo json_encode([
         'success' => false,
-        'error'   =>
+        'error' =>
             'We could not send your consultation request at this time. Please try again later.'
     ]);
 
@@ -372,7 +330,7 @@ if (!$sent) {
 }
 
 // --------------------------------------------------
-// Automatic confirmation to customer
+// Automatic confirmation to client
 // --------------------------------------------------
 
 $confirmationSubject =
@@ -387,18 +345,13 @@ $confirmationBody =
 
     "We have successfully received your consultation request and our engineering team will review the information provided.\n\n" .
 
-    "YOUR REQUEST DETAILS\n" .
+    "REQUEST DETAILS\n" .
     "----------------------------------------\n" .
 
     "Project Type: {$projectType}\n" .
 
     "Company: " .
-    (
-        $company !== ''
-            ? $company
-            : 'Not provided'
-    ) .
-
+    ($company !== '' ? $company : 'Not provided') .
     "\n" .
 
     "----------------------------------------\n\n" .
@@ -409,10 +362,11 @@ $confirmationBody =
 
     "Kind regards,\n" .
     "{$siteName}\n" .
+    "Engineering & Power Systems Division\n" .
     "Website: https://{$siteDomain}";
 
 // --------------------------------------------------
-// Confirmation email headers
+// Confirmation headers
 // --------------------------------------------------
 
 $confirmationHeaders = [];
@@ -434,12 +388,8 @@ $confirmationHeaders[] =
 $confirmationHeaders[] =
     'Content-Type: text/plain; charset=UTF-8';
 
-$confirmationHeaders[] =
-    'X-Mailer: PHP/' .
-    phpversion();
-
 // --------------------------------------------------
-// Send confirmation email
+// Send confirmation
 // --------------------------------------------------
 
 @mail(
@@ -459,7 +409,7 @@ $confirmationHeaders[] =
 echo json_encode([
     'success' => true,
     'message' =>
-        'Your consultation request has been submitted successfully. Our team will contact you shortly.'
+        'Your engineering consultation request has been submitted successfully. Our team will contact you shortly.'
 ]);
 
 exit;
