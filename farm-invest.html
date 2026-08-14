@@ -1,179 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Invest in the Farm</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css"></head>
+    <title>Invest in the Farm | Mamidav International Limited</title>
+
+    <link rel="icon" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
 <body>
-<div class="site-topbar"><div class="container"><span>Integrated Agribusiness, Engineering &amp; Services</span><span class="secondary">Nigeria <span class="accent">•</span> Reliable. Practical. Professional.</span></div></div>
-<header><div class="header-inner"><a href="index.html"><img src="logo.png" class="logo" alt="Mamidav International Limited logo"></a><div class="brand-title"><strong>Mamidav International Limited</strong><small>INTEGRATED SOLUTIONS &amp; SERVICES</small></div><button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span><span></span></button><nav aria-label="Main navigation"><a href="index.html">Home</a><a href="services.html">Services</a><a href="investors.html">Investors</a><a href="contact.html">Contact Us</a><a href="cart.html" class="cart-link">Cart<span class="cart-badge">0</span></a></nav></div></header>
 
-<div class="page-intro">
-<h2>Invest in Our Farm</h2>
-<p>Partner with us across pig farming, crop farming, garri processing and frozen foods. Tell us how you'd like to invest and we'll follow up with details.</p>
-</div>
+    <!-- TOP BAR -->
+    <div class="site-topbar">
+        <div class="container">
+            <span>
+                Integrated Agribusiness, Engineering &amp; Services
+            </span>
 
-<div class="container">
-<div class="reveal delay-1">
-
-  <form
-    class="form-card investment-form"
-    novalidate
-  >
-
-    <label>
-      Full Name
-      <input
-        type="text"
-        name="Full Name"
-        autocomplete="name"
-        required
-      >
-    </label>
-
-    <label>
-      Email
-      <input
-        type="email"
-        name="Email"
-        autocomplete="email"
-        required
-      >
-    </label>
-
-    <label>
-      Phone
-      <input
-        type="tel"
-        name="Phone"
-        autocomplete="tel"
-        required
-      >
-    </label>
-
-    <label>
-      Area of Interest
-
-      <select
-        name="Area of Interest"
-        required
-      >
-        <option value="Pig Farming">
-          Pig Farming
-        </option>
-
-        <option value="Crop Farming">
-          Crop Farming
-        </option>
-
-        <option value="Garri Processing">
-          Garri Processing
-        </option>
-
-        <option value="Frozen Foods">
-          Frozen Foods
-        </option>
-
-        <option value="Not sure yet">
-          Not sure yet
-        </option>
-      </select>
-    </label>
-
-    <label>
-      Investment Amount (₦)
-
-      <input
-        type="number"
-        name="Investment Amount (NGN)"
-        min="0"
-        step="1000"
-        inputmode="numeric"
-      >
-    </label>
-
-    <label>
-      Message
-
-      <textarea
-        name="Message"
-        rows="5"
-        placeholder="Tell us anything else you would like us to know..."
-      ></textarea>
-    </label>
-
-    <!-- Honeypot anti-spam field -->
-    <div
-      aria-hidden="true"
-      style="
-        position:absolute;
-        left:-10000px;
-        width:1px;
-        height:1px;
-        overflow:hidden;
-      "
-    >
-      <label>
-        Website
-        <input
-          type="text"
-          name="website"
-          tabindex="-1"
-          autocomplete="off"
-        >
-      </label>
+            <span class="secondary">
+                Nigeria
+                <span class="accent">•</span>
+                Reliable. Practical. Professional.
+            </span>
+        </div>
     </div>
 
-    <button
-      type="submit"
-      class="btn"
-    >
-      Send Investment Inquiry
-      <span>→</span>
-    </button>
 
-    <p class="form-note">
-      Your inquiry will be sent securely to
-      Mamidav International Limited.
-    </p>
+    <!-- HEADER -->
+    <header>
+        <div class="header-inner">
 
-    <p
-      class="form-status"
-      aria-live="polite"
-    ></p>
+            <a href="index.html">
+                <img
+                    src="logo.png"
+                    class="logo"
+                    alt="Mamidav International Limited logo"
+                >
+            </a>
 
-  </form>
+            <div class="brand-title">
+                <strong>Mamidav International Limited</strong>
+                <small>
+                    INTEGRATED SOLUTIONS &amp; SERVICES
+                </small>
+            </div>
 
-</div>
-<label>Full Name<input type="text" name="Full Name" required></label>
-<label>Email<input type="email" name="Email" required></label>
-<label>Phone<input type="tel" name="Phone" required></label>
-<label>Area of Interest
-<select name="Area of Interest">
-<option>Pig Farming</option>
-<option>Crop Farming</option>
-<option>Garri Processing</option>
-<option>Frozen Foods</option>
-<option>Not sure yet</option>
-</select>
-</label>
-<label>Investment Amount (₦)<input type="number" name="Investment Amount (NGN)" min="0" step="1000"></label>
-<label>Message<textarea name="Message" placeholder="Tell us more about how you'd like to invest"></textarea></label>
-<button type="submit" class="btn">Send Investment Inquiry</button>
-<p class="form-note">This opens your email app with the details filled in — just hit send.</p>
-</form>
-</div>
+            <button
+                class="menu-toggle"
+                type="button"
+                aria-label="Open navigation"
+                aria-expanded="false"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
-<section class="identity-profile container">
-	<div class="profile-grid">
-		<img src="logo.png" alt="Investment Lead" class="profile-pic">
-		<div class="profile-text">
-			<h3>Olufemi Adebayo — Investment Lead</h3>
-			<p><strong>Core competence:</strong> Agribusiness investment structuring, ROI modelling and investor relations.</p>
-			<p><strong>Personality & working style:</strong> Analytical, transparent, numbers-first with a practical delivery focus.</p>
-			<p><strong>How they help you decide:</strong> Clarifies investment tiers, timelines and expected returns with conservative assumptions.</p>
-			<p><strong>Credibility:</strong> Finance professional with experience in agribusiness investment and farm project underwriting.</p>
-		</div>
-	</div>
-</section>
+            <nav aria-label="Main navigation">
+                <a href="index.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="investors.html">Investors</a>
+                <a href="contact.html">Contact Us</a>
 
-<footer class="site-footer"><div class="container footer-grid"><div class="footer-brand"><img src="logo.png" class="footer-logo" alt="Mamidav logo"><p>Integrated operational execution across agriculture, events, culinary services and power engineering.</p></div><div><h4>Company</h4><a href="index.html">Home</a><a href="agriculture.html">Agriculture</a><a href="engineering.html">Engineering</a><a href="services.html">Services</a></div><div><h4>Quick links</h4><a href="investors.html">Investors</a><a href="dashboard.html">Dashboard</a><a href="cart.html">Cart</a><a href="contact.html">Contact</a></div><div><h4>Contact</h4><a href="mailto:mail@mamidavintltd.com">mail@mamidavintltd.com</a><span>Monday – Saturday</span><span>Nigeria</span></div></div><div class="container footer-bottom"><span>© 2026 Mamidav International Limited</span><span>Integrated solutions. Reliable execution.</span></div></footer>
-<script src="nav.js"></script>
-<script src="cart.js"></script>
-</body></html>
+                <a href="cart.html" class="cart-link">
+                    Cart
+                    <span class="cart-badge">0</span>
+                </a>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- PAGE INTRO -->
+    <div class="page-intro">
+
+        <h2>Invest in Our Farm</h2>
+
+        <p>
+            Partner with us across pig farming, crop farming,
+            garri processing and frozen foods. Tell us how
+            you'd like to invest and we'll follow up with details.
+        </p>
+
+    </div>
+
+
+    <!-- INVESTMENT FORM -->
+    <div class="container">
+
+        <div class="reveal delay-1">
+
+            <form
+                class="form-card investment-form"
+                novalidate
+            >
+
+                <!-- FULL NAME -->
+                <label>
+                    Full Name
+
+                    <input
+                        type="text"
+                        name="Full Name"
+                        autocomplete="name"
+                        required
+                    >
+                </label>
+
+
+                <!-- EMAIL -->
+                <label>
+                    Email
+
+                    <input
+                        type="email"
+                        name="Email"
+                        autocomplete="email"
+                        required
+                    >
+                </label>
+
+
+                <!-- PHONE -->
+                <label>
+                    Phone
+
+                    <input
+                        type="tel"
+                        name="Phone"
+                        autocomplete="tel"
+                        required
+                    >
+                </label>
+
+
+                <!-- AREA OF INTEREST -->
+                <label>
+                    Area of Interest
+
+                    <select
+                        name="Area of Interest"
+                        required
+                    >
+                        <option value="Pig Farming">
+                            Pig Farming
+                        </option>
+
+                        <option value="Crop Farming">
+                            Crop Farming
+                        </option>
+
+                        <option value="Garri Processing">
+                            Garri Processing
+                        </option>
+
+                        <option value="Frozen Foods">
+                            Frozen Foods
+                        </option>
+
+                        <option value="Not sure yet">
+                            Not sure yet
+                        </option>
+                    </select>
+                </label>
+
+
+                <!-- INVESTMENT AMOUNT -->
+                <label>
+                    Investment Amount (₦)
+
+                    <input
+                        type="number"
+                        name="Investment Amount (NGN)"
+                        min="0"
+                        step="1000"
+                        inputmode="numeric"
+                    >
+                </label>
+
+
+                <!-- MESSAGE -->
+                <label>
+                    Message
+
+                    <textarea
+                        name="Message"
+                        rows="5"
+                        placeholder="Tell us anything else you would like us to know..."
+                    ></textarea>
+                </label>
+
+
+                <!-- HONEYPOT ANTI-SPAM FIELD -->
+                <div
+                    aria-hidden="true"
+                    style="
+                        position:absolute;
+                        left:-10000px;
+                        width:1px;
+                        height:1px;
+                        overflow:hidden;
+                    "
+                >
+                    <label>
+                        Website
+
+                        <input
+                            type="text"
+                            name="website"
+                            tabindex="-1"
+                            autocomplete="off"
+                        >
+                    </label>
+                </div>
+
+
+                <!-- SUBMIT BUTTON -->
+                <button
+                    type="submit"
+                    class="btn"
+                >
+                    Send Investment Inquiry
+                    <span>→</span>
+                </button>
+
+
+                <!-- FORM NOTE -->
+                <p class="form-note">
+                    Your inquiry will be sent securely to
+                    Mamidav International Limited.
+                </p>
+
+
+                <!-- AJAX STATUS MESSAGE -->
+                <p
+                    class="form-status"
+                    aria-live="polite"
+                ></p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- INVESTMENT LEAD -->
+    <section class="identity-profile container">
+
+        <div class="profile-grid">
+
+            <img
+                src="logo.png"
+                alt="Investment Lead"
+                class="profile-pic"
+            >
+
+            <div class="profile-text">
+
+                <h3>
+                    Olufemi Adebayo — Investment Lead
+                </h3>
+
+                <p>
+                    <strong>Core competence:</strong>
+                    Agribusiness investment structuring,
+                    ROI modelling and investor relations.
+                </p>
+
+                <p>
+                    <strong>Personality &amp; working style:</strong>
+                    Analytical, transparent, numbers-first
+                    with a practical delivery focus.
+                </p>
+
+                <p>
+                    <strong>How they help you decide:</strong>
+                    Clarifies investment tiers, timelines
+                    and expected returns with conservative assumptions.
+                </p>
+
+                <p>
+                    <strong>Credibility:</strong>
+                    Finance professional with experience in
+                    agribusiness investment and farm project underwriting.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+
+        <div class="container footer-grid">
+
+            <div class="footer-brand">
+
+                <img
+                    src="logo.png"
+                    class="footer-logo"
+                    alt="Mamidav logo"
+                >
+
+                <p>
+                    Integrated operational execution across
+                    agriculture, events, culinary services and
+                    power engineering.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h4>Company</h4>
+
+                <a href="index.html">Home</a>
+                <a href="agriculture.html">Agriculture</a>
+                <a href="engineering.html">Engineering</a>
+                <a href="services.html">Services</a>
+
+            </div>
+
+
+            <div>
+
+                <h4>Quick links</h4>
+
+                <a href="investors.html">Investors</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="cart.html">Cart</a>
+                <a href="contact.html">Contact</a>
+
+            </div>
+
+
+            <div>
+
+                <h4>Contact</h4>
+
+                <a href="mailto:mail@mamidavintltd.com">
+                    mail@mamidavintltd.com
+                </a>
+
+                <span>Monday – Saturday</span>
+                <span>Nigeria</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="container footer-bottom">
+
+            <span>
+                © 2026 Mamidav International Limited
+            </span>
+
+            <span>
+                Integrated solutions. Reliable execution.
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="nav.js"></script>
+    <script src="cart.js"></script>
+    <script src="investment.js"></script>
+
+</body>
+</html>
