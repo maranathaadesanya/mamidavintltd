@@ -1716,12 +1716,9 @@ document.addEventListener(
       );
 
       /*
-       * IMPORTANT:
-       * This was the missing piece.
-       *
-       * It connects the signup form's submit
-       * event to doSignup().
-       */
+      * Connect the signup form's submit
+      * event to doSignup().
+      */
       signupForm.addEventListener(
         "submit",
         (event) => {
@@ -1739,16 +1736,11 @@ document.addEventListener(
       );
 
       /*
-       * Make sure verification panel
-       * starts hidden.
-       */
+      * Make sure verification panel
+      * starts hidden.
+      */
       hideVerificationPanel();
 
-    } else {
-
-      console.warn(
-        "MAMIDAV: #signup-form was NOT found on this page."
-      );
     }
 
     // ----------------------------------------
