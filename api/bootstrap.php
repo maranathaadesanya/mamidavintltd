@@ -44,3 +44,23 @@ function require_login() {
         exit;
     }
 }
+
+function is_admin() {
+    $userId = current_user_id();
+    if (!$userId) {
+        return false;
+    }
+    $stmt = get_db()->prepare('SELECT is_admin FROM users WHERE id = ?');
+    $stmt->execute([$userId]);
+    $user = $stmt->fetch();
+    return $user && (int) $user['is_admin'] === 1;
+}
+
+function require_admin() {
+    require_login();
+    if (!is_admin()) {
+        http_response_code(403);
+        echo json_encode(['error' => 'You do not have access to this.']);
+        exit;
+    }
+}

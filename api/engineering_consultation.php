@@ -220,6 +220,22 @@ if ($projectType === '') {
 }
 
 // --------------------------------------------------
+// Log for sales/business record (CSV export)
+// --------------------------------------------------
+
+require_once __DIR__ . '/bootstrap.php';
+
+try {
+    $summary = "Project type: {$projectType}" . ($projectDescription !== '' ? "; Description: {$projectDescription}" : '');
+    $insert = get_db()->prepare(
+        'INSERT INTO purchase_log (type, customer_name, customer_email, customer_phone, summary, amount, user_id) VALUES (?, ?, ?, ?, ?, NULL, ?)'
+    );
+    $insert->execute(['consultation_request', $fullName, $email, $phone, $summary, current_user_id()]);
+} catch (Throwable $e) {
+    error_log('Mamidav purchase_log insert failed (engineering_consultation): ' . $e->getMessage());
+}
+
+// --------------------------------------------------
 // Prepare email subject
 // --------------------------------------------------
 

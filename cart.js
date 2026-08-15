@@ -319,19 +319,36 @@ function placeOrder() {
     return;
   }
 
-  if (currentUser) {
-    window.location.href =
-      "payments.html";
-    return;
-  }
+  const lines = cartState.map(
+    (item) => `- ${item.name} x${item.qty} = ${formatNaira(item.price * item.qty)}`
+  );
 
-  const next =
-    encodeURIComponent(
-      "cart.html"
-    );
+  const body = [
+    "Hello Mamidav International Limited,",
+    "",
+    "I would like to place the following order:",
+    "",
+    ...lines,
+    "",
+    "Total: " + formatNaira(cartTotal()),
+    "",
+    "My contact details:",
+    "Name: " + (currentUser ? currentUser.full_name : ""),
+    "Phone: " + (currentUser ? (currentUser.phone || "") : ""),
+    "Email: " + (currentUser ? currentUser.email : ""),
+    "Delivery/Pickup address:",
+  ].join("\n");
 
-  window.location.href =
-    `login.html?next=${next}`;
+  // Best-effort logging for the sales record — never blocks the order itself.
+  apiPost("log_order.php", {
+    items: cartState,
+    total: cartTotal(),
+  }).catch(() => {});
+
+  const mailto = "mailto:" + MAMIDAV_ORDER_EMAIL +
+    "?subject=" + encodeURIComponent("New Order from mamidavintltd.com") +
+    "&body=" + encodeURIComponent(body);
+  window.location.href = mailto;
 }
 
 function requestPayment(method) {
@@ -1685,6 +1702,47 @@ function renderProfilePage() {
   }
 }
 
+async function loadDashboardSummary() {
+  const { ok, data } = await apiGet("dashboard_summary.php");
+  if (!ok) return;
+
+  const set = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+
+  set("stat-orders", data.total_orders);
+  set("stat-revenue", formatNaira(data.total_revenue));
+  set("stat-bookings", data.total_event_bookings);
+  set("stat-investments", data.total_investment_inquiries);
+  set("stat-consultations", data.total_consultation_requests);
+
+  const body = document.getElementById("recent-activity-body");
+  if (!body) return;
+
+  if (!data.recent || data.recent.length === 0) {
+    body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted)">No activity yet.</td></tr>';
+    return;
+  }
+
+  const typeLabels = {
+    order: "Order",
+    investment_inquiry: "Investment Inquiry",
+    event_booking: "Event Booking",
+    consultation_request: "Consultation",
+  };
+
+  body.innerHTML = data.recent.map((row) => `
+    <tr>
+      <td>${escapeHtml(row.created_at)}</td>
+      <td>${escapeHtml(typeLabels[row.type] || row.type)}</td>
+      <td>${escapeHtml(row.customer_name || "—")}</td>
+      <td>${escapeHtml(row.summary)}</td>
+      <td>${row.amount != null ? formatNaira(row.amount) : "—"}</td>
+    </tr>
+  `).join("");
+}
+
 // ---------- DOM initialization ----------
 
 document.addEventListener(
@@ -1819,6 +1877,19 @@ if (signupForm) {
     }
 
     renderProfilePage();
+
+    const adminSummary = document.getElementById("admin-summary");
+    if (adminSummary) {
+      const exportDenied = document.getElementById("export-purchases-denied");
+      const allowed = !!(currentUser && currentUser.is_admin);
+      adminSummary.hidden = !allowed;
+      if (exportDenied) {
+        exportDenied.hidden = allowed;
+      }
+      if (allowed) {
+        await loadDashboardSummary();
+      }
+    }
 
     await loadCart();
 

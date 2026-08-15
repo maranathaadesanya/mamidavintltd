@@ -8,9 +8,35 @@
 <div class="grid-cards">
 <div class="card"><h3>Total Investors</h3><p>Coming soon</p></div>
 <div class="card"><h3>Total Projects</h3><p>Coming soon</p></div>
-<div class="card"><h3>Total Revenue</h3><p>Coming soon</p></div>
 <div class="card"><h3>Active Farms &amp; Projects</h3><p>Coming soon</p></div>
 </div>
+
+<div id="admin-summary" hidden style="margin-top:36px">
+<div class="section-heading" style="text-align:left;margin:0 0 16px"><p class="eyebrow">SALES &amp; ACTIVITY</p><h2>Admin summary</h2></div>
+<div class="grid-cards">
+<div class="card"><h3>Orders</h3><p id="stat-orders">—</p></div>
+<div class="card"><h3>Revenue (Orders + Bookings)</h3><p id="stat-revenue">—</p></div>
+<div class="card"><h3>Event Bookings</h3><p id="stat-bookings">—</p></div>
+<div class="card"><h3>Investment Inquiries</h3><p id="stat-investments">—</p></div>
+<div class="card"><h3>Consultation Requests</h3><p id="stat-consultations">—</p></div>
+</div>
+
+<div style="margin-top:28px">
+<h3 style="color:var(--burgundy);font-family:'Playfair Display',Georgia,serif">Recent Activity</h3>
+<div class="table-wrap">
+<table class="cart-table">
+<thead><tr><th>Date</th><th>Type</th><th>Customer</th><th>Details</th><th>Amount</th></tr></thead>
+<tbody id="recent-activity-body"></tbody>
+</table>
+</div>
+</div>
+
+<div style="text-align:center;margin-top:24px">
+<a id="export-purchases-link" href="/api/export_purchases.php" class="btn">Download Full Dataset (CSV)</a>
+</div>
+</div>
+
+<p id="export-purchases-denied" style="color:var(--muted);font-size:13px;text-align:center;margin-top:24px" hidden>Sales data and purchase export are restricted to admin accounts.</p>
 </div>
 <footer class="site-footer"><div class="container footer-grid"><div class="footer-brand"><img src="logo.png" class="footer-logo" alt="Mamidav logo"><p>Integrated operational execution across agriculture, events, culinary services and power engineering.</p></div><div><h4>Company</h4><a href="index.html">Home</a><a href="about.html">About</a><a href="agriculture.html">Agriculture</a><a href="engineering.html">Engineering</a><a href="services.html">Services</a></div><div><h4>Quick links</h4><a href="investors.html">Investors</a><a href="dashboard.html">Dashboard</a><a href="cart.html">Cart</a><a href="contact.html">Contact Us</a></div><div><h4>Contact Us</h4><a href="#" class="copy-email" data-email="mail@mamidavintltd.com">mail@mamidavintltd.com</a><span>8:00 AM - 6:00 PM Monday – Saturday</span><span>Anuoluwapo street, Omusoko, Off Arigbawonwo, Mowe, Nigeria, 110115</span></div></div><div class="container footer-bottom"><span>© 2026 Mamidav International Limited</span><span>Integrated solutions. Reliable execution.</span></div></footer>
 <script src="nav.js"></script>

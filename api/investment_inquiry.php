@@ -223,6 +223,23 @@ if ($investmentAmount !== '') {
 }
 
 // --------------------------------------------------
+// Log for sales/business record (CSV export)
+// --------------------------------------------------
+
+require_once __DIR__ . '/bootstrap.php';
+
+try {
+    $logAmount = (isset($numericAmount) && $numericAmount !== '' && is_numeric($numericAmount)) ? (int) $numericAmount : null;
+    $summary = "Area: {$areaOfInterest}; Amount: {$formattedAmount}" . ($message !== '' ? "; Message: {$message}" : '');
+    $insert = get_db()->prepare(
+        'INSERT INTO purchase_log (type, customer_name, customer_email, customer_phone, summary, amount, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    );
+    $insert->execute(['investment_inquiry', $fullName, $email, $phone, $summary, $logAmount, current_user_id()]);
+} catch (Throwable $e) {
+    error_log('Mamidav purchase_log insert failed (investment_inquiry): ' . $e->getMessage());
+}
+
+// --------------------------------------------------
 // Prepare email subject
 // --------------------------------------------------
 

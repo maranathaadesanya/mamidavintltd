@@ -8,7 +8,7 @@ if (!$userId) {
 }
 
 $pdo = get_db();
-$stmt = $pdo->prepare('SELECT full_name, email, phone FROM users WHERE id = ?');
+$stmt = $pdo->prepare('SELECT full_name, email, phone, is_admin FROM users WHERE id = ?');
 $stmt->execute([$userId]);
 $user = $stmt->fetch();
 
@@ -22,4 +22,5 @@ echo json_encode([
     'full_name' => $user['full_name'],
     'email' => $user['email'],
     'phone' => $user['phone'],
+    'is_admin' => (int) $user['is_admin'] === 1,
 ]);

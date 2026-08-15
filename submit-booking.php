@@ -84,6 +84,19 @@ $package_price = $pkgInfo['price'];
 // Booking reference
 $ref = 'MIL-EVT-' . date('Ymd') . '-' . strtoupper(bin2hex(random_bytes(3)));
 
+// Log for sales/business record (CSV export). Best-effort — a DB hiccup
+// here must never block the actual booking email flow below.
+try {
+    require_once __DIR__ . '/api/bootstrap.php';
+    $summary = "Ref: {$ref}; Package: {$package_name}; Event: {$event_type}; Date: {$event_date}; Venue: {$event_location}; Guests: {$expected_guests}";
+    $insert = get_db()->prepare(
+        'INSERT INTO purchase_log (type, customer_name, customer_email, customer_phone, summary, amount, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    );
+    $insert->execute(['event_booking', $full_name, $email, $phone, $summary, $package_price, current_user_id()]);
+} catch (Throwable $e) {
+    error_log('Mamidav purchase_log insert failed (submit-booking): ' . $e->getMessage());
+}
+
 // Build email bodies
 $subject_admin = "New Event Booking Request — $ref";
 $body_lines = [];
