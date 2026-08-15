@@ -1,0 +1,2 @@
+<?php
+require_once __DIR__ . '/bootstrap.php'; require_admin(); $id=(int)($_GET['id']??0);$pdo=get_db();$s=$pdo->prepare('SELECT o.*,u.full_name AS verifier_name FROM orders o LEFT JOIN users u ON u.id=o.verified_by WHERE o.id=?');$s->execute([$id]);$order=$s->fetch();if(!$order){http_response_code(404);echo json_encode(['error'=>'Order not found.']);exit;}$i=$pdo->prepare('SELECT item_name,qty,unit_price,subtotal FROM order_items WHERE order_id=?');$i->execute([$id]);echo json_encode(['order'=>$order,'items'=>$i->fetchAll()]);

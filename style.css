@@ -2807,6 +2807,21 @@ nav .cart-link:focus-visible{
 .cart-link .cart-icon{ width:17px; height:17px; }
 .cart-link .cart-badge{ display:inline-block; margin-left:0; background:var(--gold); color:var(--burgundy); }
 
+.cart-actions{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:12px;
+  margin-top:18px;
+}
+.payment-methods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:24px}.payment-method{display:flex;flex-direction:column;gap:12px}.payment-method .btn,.payment-method .btn-outline-dark{margin-top:auto;text-align:center}@media(max-width:760px){.payment-methods{grid-template-columns:1fr}}
+
+@media(max-width:600px){
+  .cart-actions{ flex-direction:column-reverse; align-items:stretch; }
+  .cart-actions .btn,
+  .cart-actions .btn-outline-dark{ width:100%; justify-content:center; }
+}
+
 .menu-toggle:focus-visible,
 .nav-dropdown-toggle:focus-visible,
 nav a:focus-visible{

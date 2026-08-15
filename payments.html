@@ -16,10 +16,23 @@
     </nav>
   </div>
 </header>
-<div class="page-intro"><h2>Make a Payment</h2><p>Online payments via Paystack and Flutterwave are being set up. Click below and we'll send you secure payment instructions directly.</p></div>
-<div class="container" style="text-align:center;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-<button class="btn" onclick="requestPayment('Paystack')">Pay with Paystack</button>
-<button class="btn" onclick="requestPayment('Flutterwave')">Pay with Flutterwave</button>
+<div class="page-intro"><h2>Choose Payment Method</h2><p id="checkout-summary">Preparing your secure checkout…</p></div>
+<div class="container payment-methods">
+<article class="card payment-method"><h3>Pay with Paystack</h3><p id="paystack-copy">Coming Soon</p><button class="btn" id="paystack-button" type="button" disabled>Coming Soon</button></article>
+<article class="card payment-method"><h3>Pay with USSD</h3><p id="ussd-copy">Coming Soon</p><button class="btn-outline-dark" id="ussd-button" type="button" disabled>Coming Soon</button></article>
+<article class="card payment-method"><h3>Pay by Bank Transfer</h3><p>Transfer using your unique order reference. Payment remains pending until verified.</p><button class="btn-outline-dark" type="button" onclick="showBankTransfer()">View Bank Details</button></article>
+</div>
+<div class="container" id="bank-transfer-details" hidden><div class="card"><h3>Bank Transfer</h3><p><strong>Bank:</strong> Zenith Bank<br><strong>Account number:</strong> 1219408988<br><strong>Account name:</strong> Mamidav International Limited</p><p id="bank-transfer-reference"></p><p>After transferring, retain your receipt. An administrator will verify your payment before the order is confirmed.</p></div></div>
+<script>
+const checkout = JSON.parse(sessionStorage.getItem('mamidav_checkout') || 'null');
+const orderReference = new URLSearchParams(location.search).get('order') || (checkout && checkout.reference);
+document.getElementById('checkout-summary').textContent = checkout ? `Order ${checkout.reference} — Total: ₦${Number(checkout.total).toLocaleString('en-NG')}` : 'Select a payment method for your pending order.';
+async function startPaystack(method) { if (!orderReference) return alert('Your checkout has expired. Return to your cart and place the order again.'); const r=await fetch('/api/payment_initialize.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reference:orderReference,method})}); const d=await r.json(); if(!r.ok) return alert(d.error||'Unable to initialize payment.'); sessionStorage.setItem('mamidav_payment_reference',d.payment_reference); location.href=d.authorization_url; }
+async function showBankTransfer(){ if(!orderReference) return alert('Your checkout has expired.'); const r=await fetch('/api/bank_transfer_select.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reference:orderReference})}); const d=await r.json(); if(!r.ok)return alert(d.error||'Unable to prepare transfer.'); document.getElementById('bank-transfer-reference').textContent='Payment reference: '+orderReference+' — Pending Verification'; document.getElementById('bank-transfer-details').hidden=false; }
+async function verifyReturnedPayment(){ const ref=sessionStorage.getItem('mamidav_payment_reference'); if(!ref || !location.search) return; const r=await fetch('/api/payment_verify.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reference:ref})}); const d=await r.json(); if(d.paid){ sessionStorage.removeItem('mamidav_payment_reference'); document.getElementById('checkout-summary').textContent='Payment verified. Your order is confirmed.'; } }
+verifyReturnedPayment();
+fetch('/api/payment_status.php').then(r=>r.json()).then(s=>{ if(s.paystack_available){const b=document.getElementById('paystack-button');b.disabled=false;b.textContent='Continue with Paystack';b.onclick=()=>startPaystack('paystack');document.getElementById('paystack-copy').textContent='Secure online payment.';} if(s.ussd_available){const b=document.getElementById('ussd-button');b.disabled=false;b.textContent='Continue with USSD';b.onclick=()=>startPaystack('ussd');document.getElementById('ussd-copy').textContent='Transaction-specific instructions from Paystack.';} });
+</script>
 </div>
 <footer class="site-footer"><div class="container footer-grid"><div class="footer-brand"><img src="logo.png" class="footer-logo" alt="Mamidav logo"><p>Integrated operational execution across agriculture, events, culinary services and power engineering.</p></div><div><h4>Company</h4><a href="index.html">Home</a><a href="about.html">About</a><a href="agriculture.html">Agriculture</a><a href="engineering.html">Engineering</a><a href="services.html">Services</a></div><div><h4>Quick links</h4><a href="investors.html">Investors</a><a href="dashboard.html">Dashboard</a><a href="cart.html">Cart</a><a href="contact.html">Contact Us</a></div><div><h4>Contact Us</h4><a href="#" class="copy-email" data-email="mail@mamidavintltd.com">mail@mamidavintltd.com</a><span>8:00 AM - 6:00 PM Monday - Saturday</span><span>Anuoluwapo street, Omusoko, Off Arigbawonwo, Mowe, Nigeria, 110115</span></div></div><div class="container footer-bottom"><span>© 2026 Mamidav International Limited</span><span>Integrated solutions. Reliable execution.</span></div></footer>
 <script src="nav.js"></script>

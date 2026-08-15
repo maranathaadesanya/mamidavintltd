@@ -235,6 +235,10 @@ function renderCartTable() {
     document.getElementById(
       "place-order-btn"
     );
+  const clearCartBtn =
+    document.getElementById(
+      "clear-cart-btn"
+    );
 
   if (cartState.length === 0) {
     body.innerHTML = "";
@@ -250,6 +254,9 @@ function renderCartTable() {
     if (placeOrderBtn) {
       placeOrderBtn.disabled = true;
     }
+    if (clearCartBtn) {
+      clearCartBtn.disabled = true;
+    }
 
     return;
   }
@@ -264,6 +271,9 @@ function renderCartTable() {
 
   if (placeOrderBtn) {
     placeOrderBtn.disabled = false;
+  }
+  if (clearCartBtn) {
+    clearCartBtn.disabled = false;
   }
 
   body.innerHTML = cartState
@@ -314,41 +324,36 @@ function renderCartTable() {
 
 // ---------- Orders / Payments ----------
 
-function placeOrder() {
+async function placeOrder() {
   if (cartState.length === 0) {
     return;
   }
 
-  const lines = cartState.map(
-    (item) => `- ${item.name} x${item.qty} = ${formatNaira(item.price * item.qty)}`
-  );
+  const button = document.getElementById("place-order-btn");
+  if (button) button.disabled = true;
+  try {
+    const { ok, data } = await apiPost("checkout_create.php", {});
+    if (!ok || !data.reference) throw new Error(data.error || "Could not start checkout.");
+    sessionStorage.setItem("mamidav_checkout", JSON.stringify(data));
+    window.location.href = "payments.html?order=" + encodeURIComponent(data.reference);
+  } catch (error) {
+    alert(error.message || "Could not start checkout. Please try again.");
+    if (button) button.disabled = false;
+  }
+}
 
-  const body = [
-    "Hello Mamidav International Limited,",
-    "",
-    "I would like to place the following order:",
-    "",
-    ...lines,
-    "",
-    "Total: " + formatNaira(cartTotal()),
-    "",
-    "My contact details:",
-    "Name: " + (currentUser ? currentUser.full_name : ""),
-    "Phone: " + (currentUser ? (currentUser.phone || "") : ""),
-    "Email: " + (currentUser ? currentUser.email : ""),
-    "Delivery/Pickup address:",
-  ].join("\n");
+async function clearCart() {
+  if (cartState.length === 0 || !window.confirm("Are you sure you want to clear your cart?")) {
+    return;
+  }
 
-  // Best-effort logging for the sales record - never blocks the order itself.
-  apiPost("log_order.php", {
-    items: cartState,
-    total: cartTotal(),
-  }).catch(() => {});
+  if (currentUser) {
+    await Promise.all(cartState.map((item) => apiPost("cart_remove.php", { id: item.id })));
+  } else {
+    saveLocalCart([]);
+  }
 
-  const mailto = "mailto:" + MAMIDAV_ORDER_EMAIL +
-    "?subject=" + encodeURIComponent("New Order from mamidavintltd.com") +
-    "&body=" + encodeURIComponent(body);
-  window.location.href = mailto;
+  await loadCart();
 }
 
 function requestPayment(method) {
@@ -1700,8 +1705,8 @@ function renderProfilePage() {
   }
 }
 
-async function loadDashboardSummary() {
-  const { ok, data } = await apiGet("dashboard_summary.php");
+async function loadDashboardSummary(page = 1) {
+  const { ok, data } = await apiGet("dashboard_summary.php?page=" + page);
   if (!ok) return;
 
   const set = (id, value) => {
@@ -1739,6 +1744,14 @@ async function loadDashboardSummary() {
       <td>${row.amount != null ? formatNaira(row.amount) : "-"}</td>
     </tr>
   `).join("");
+
+  const pager = document.getElementById("recent-activity-pages");
+  if (pager) {
+    const current = data.recent_page || 1;
+    const pages = data.recent_pages || 1;
+    const numberButtons = Array.from({ length: pages }, (_, i) => i + 1).map((number) => `<button type="button" class="${number === current ? "active" : ""}" ${number === current ? 'aria-current="page"' : ""} onclick="loadDashboardSummary(${number})">${number}</button>`).join("");
+    pager.innerHTML = `<span>Showing ${data.recent_total ? ((current - 1) * 10 + 1) : 0}–${Math.min(current * 10, data.recent_total || 0)} of ${data.recent_total || 0}</span><button type="button" ${current === 1 ? "disabled" : ""} onclick="loadDashboardSummary(${current - 1})">Previous</button>${numberButtons}<button type="button" ${current === pages ? "disabled" : ""} onclick="loadDashboardSummary(${current + 1})">Next</button>`;
+  }
 }
 
 async function loadMyActivity() {
@@ -2116,3 +2129,16 @@ document.addEventListener(
     }
   }
 );
+
+// Orders administration and customer order history use the existing APIs and
+// are only activated on their respective pages.
+document.addEventListener('DOMContentLoaded', () => {
+  const page = location.pathname.split('/').pop();
+  const money = (n) => formatNaira(Number(n || 0));
+  const pager = (page, pages, fn) => `<button ${page===1?'disabled':''} onclick="${fn}(${page-1})">← Previous</button>${Array.from({length:pages},(_,i)=>i+1).map(n=>`<button class="${n===page?'active':''}" onclick="${fn}(${n})">${n}</button>`).join('')}<button ${page===pages?'disabled':''} onclick="${fn}(${page+1})">Next →</button>`;
+  if (page === 'orders.html') {
+    document.querySelector('main').innerHTML = `<p><a href="dashboard.html">← Dashboard</a></p><h2>Order History</h2><button class="btn" id="manual-order-toggle">Add Manual Order</button><form id="manual-order-form" class="form-card" hidden><h3>Manual Order</h3><label>Customer name<input name="customer_name" required></label><label>Phone<input name="customer_phone"></label><label>Email<input name="customer_email" type="email"></label><label>Address<textarea name="delivery_address"></textarea></label><label>Product/service<input name="item_name" required></label><label>Quantity<input name="qty" type="number" min="1" value="1" required></label><label>Unit price<input name="unit_price" type="number" min="0" required></label><label>Discount<input name="discount" type="number" min="0" value="0"></label><label>Payment method<select name="payment_method"><option value="cash">Cash</option><option value="bank_transfer">Bank Transfer</option><option value="other">Other</option></select></label><label>Payment status<select name="payment_status"><option value="pending">Pending</option><option value="paid">Paid</option><option value="failed">Failed</option></select></label><label>Source<select name="order_source"><option value="phone">Phone</option><option value="whatsapp">WhatsApp</option><option value="walk_in">Walk-in</option><option value="face_to_face">Face-to-face</option><option value="other">Other</option></select></label><label>Notes<textarea name="notes"></textarea></label><button class="btn">Save Manual Order</button></form><div class="card"><input id="oq" placeholder="Search reference, customer, email or phone"><select id="ops"><option value="">Payment status</option><option>pending</option><option>paid</option><option>failed</option></select><select id="oos"><option value="">Order status</option><option value="pending_payment">Pending payment</option><option>confirmed</option><option>processing</option><option>completed</option><option>cancelled</option></select><select id="osrc"><option value="">Source</option><option>online</option><option>phone</option><option>whatsapp</option><option value="walk_in">walk-in</option><option value="face_to_face">face-to-face</option><option>other</option></select><select id="opm"><option value="">Payment method</option><option>bank_transfer</option><option>cash</option><option>paystack</option></select><input id="odf" type="date"><input id="odt" type="date"><button class="btn" id="apply-orders">Apply Filters</button><button id="clear-orders">Clear Filters</button><a id="orders-export" class="btn-outline-dark">Export CSV</a></div><div class="table-wrap"><table class="cart-table"><thead><tr><th>Reference</th><th>Customer</th><th>Source</th><th>Payment</th><th>Status</th><th>Total</th><th></th></tr></thead><tbody id="orders-body"></tbody></table></div><div id="orders-pages" class="cart-actions"></div><div id="order-detail"></div>`;
+    let current=1; const params=()=>new URLSearchParams({q:oq.value,payment_status:ops.value,order_status:oos.value,order_source:osrc.value,payment_method:opm.value,date_from:odf.value,date_to:odt.value}); window.loadOrders=async n=>{current=n;const p=params();p.set('page',n);const d=await (await fetch('/api/orders_list.php?'+p)).json();orders_body.innerHTML=d.orders.map(o=>`<tr><td>${o.reference}</td><td>${o.customer_name}</td><td>${o.order_source}</td><td>${o.payment_method||'-'}</td><td>${o.payment_status}/${o.order_status}</td><td>${money(o.total)}</td><td><button onclick="showOrder(${o.id})">Details</button></td></tr>`).join('')||'<tr><td colspan="7">No orders found.</td></tr>';orders_pages.innerHTML=pager(d.page,d.pages,'loadOrders');orders_export.href='/api/orders_export.php?'+params()};window.showOrder=async id=>{const d=await(await fetch('/api/order_detail.php?id='+id)).json(),o=d.order;order_detail.innerHTML=`<div class="card"><h3>${o.reference}</h3><p>${o.customer_name}<br>${o.customer_email||''}<br>${o.customer_phone||''}</p><p>${d.items.map(i=>`${i.item_name} × ${i.qty} — ${money(i.subtotal)}`).join('<br>')}</p><p>Subtotal ${money(o.subtotal)} · Discount ${money(o.discount)} · Total ${money(o.total)}</p><p>${o.payment_method||'-'} / ${o.payment_status} · ${o.order_status}<br>Reference: ${o.payment_reference||o.reference}<br>Created: ${o.created_at}<br>Verified: ${o.verifier_name||'-'} ${o.verified_at||''}<br>${o.notes||''}</p></div>`};apply_orders.onclick=()=>loadOrders(1);clear_orders.onclick=()=>{document.querySelectorAll('#oq,#ops,#oos,#osrc,#opm,#odf,#odt').forEach(x=>x.value='');loadOrders(1)};manual_order_toggle.onclick=()=>manual_order_form.hidden=!manual_order_form.hidden;manual_order_form.onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const r=await fetch('/api/manual_order_create.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});if(!r.ok)return alert((await r.json()).error);e.target.reset();e.target.hidden=true;loadOrders(1)};loadOrders(1);
+  }
+  if (page === 'profile.html') { const host=document.querySelector('.container'); const section=document.createElement('section');section.innerHTML='<div style="margin-top:36px"><h3>My Orders</h3><div class="table-wrap"><table class="cart-table"><thead><tr><th>Reference</th><th>Date</th><th>Total</th><th>Payment</th><th>Status</th></tr></thead><tbody id="my-orders-body"></tbody></table></div><div id="my-orders-pages" class="cart-actions"></div></div>';host.append(section);window.loadMyOrders=async n=>{const d=await(await fetch('/api/my_orders.php?page='+n)).json();my_orders_body.innerHTML=d.orders.map(o=>`<tr><td>${o.reference}</td><td>${o.created_at}</td><td>${money(o.total)}</td><td>${o.payment_method||'-'}</td><td>${o.payment_status}/${o.order_status}</td></tr>`).join('');my_orders_pages.innerHTML=pager(d.page,d.pages,'loadMyOrders')};loadMyOrders(1); }
+});
