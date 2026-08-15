@@ -1,0 +1,7 @@
+# Keep root documents and static interface assets fresh after deployment while
+# still allowing the browser to validate cached copies with the server.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|css|js)$">
+    Header always set Cache-Control "max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
