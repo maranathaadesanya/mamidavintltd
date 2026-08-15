@@ -1,14 +1,27 @@
 
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Payments</title><link rel="icon" href="favicon.ico"><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css?v=20260815d"></head>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Payments</title><link rel="icon" href="favicon.ico"><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css"></head>
 <body>
 <div class="site-topbar"><div class="container"><span>Integrated Agribusiness, Engineering &amp; Services</span><span class="secondary">Reliable. Practical. Professional.</span></div></div>
-<header><div class="header-inner"><a href="index.html"><img src="logo.png" class="logo" alt="Mamidav International Limited logo"></a><div class="brand-title"><strong>Mamidav International Limited</strong><small>INTEGRATED SOLUTIONS &amp; SERVICES</small></div><button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span><span></span></button><nav aria-label="Main navigation"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="investors.html">Investors</a><a href="contact.html">Contact Us</a><a href="cart.html" class="cart-link">Cart<span class="cart-badge">0</span></a></nav></div></header>
+<header>
+  <div class="header-inner">
+    <a href="index.html" aria-label="Mamidav International Limited home"><img src="logo.png" class="logo" alt="Mamidav International Limited logo"></a>
+    <div class="brand-title"><strong>Mamidav International Limited</strong><small>INTEGRATED SOLUTIONS &amp; SERVICES</small></div>
+    <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span></span><span></span><span></span></button>
+    <nav id="primary-navigation" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <div class="nav-dropdown"><button class="nav-dropdown-toggle" type="button" aria-expanded="false" aria-controls="solutions-menu">Solutions <span aria-hidden="true">⌄</span></button><div class="nav-dropdown-menu" id="solutions-menu" role="menu"><a role="menuitem" href="agriculture.html">Agribusiness</a><a role="menuitem" href="engineering.html">Engineering</a><a role="menuitem" href="rentals.html">Events &amp; Rentals</a><a role="menuitem" href="bakery.html">Culinary Services</a></div></div>
+      <a href="investors.html">Invest</a>
+      <div class="nav-dropdown"><button class="nav-dropdown-toggle" type="button" aria-expanded="false" aria-controls="company-menu">Company <span aria-hidden="true">⌄</span></button><div class="nav-dropdown-menu" id="company-menu" role="menu"><a role="menuitem" href="about.html">About Us</a><a role="menuitem" href="about.html#our-approach">Our Approach</a><a role="menuitem" href="contact.html">Contact Us</a></div></div>
+      <a href="cart.html" class="cart-link" aria-label="View cart"><svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.2 11.1a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 1.9-1.5L21 8H6"></path><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg><span>Cart</span><span class="cart-badge">0</span></a>
+    </nav>
+  </div>
+</header>
 <div class="page-intro"><h2>Make a Payment</h2><p>Online payments via Paystack and Flutterwave are being set up. Click below and we'll send you secure payment instructions directly.</p></div>
 <div class="container" style="text-align:center;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
 <button class="btn" onclick="requestPayment('Paystack')">Pay with Paystack</button>
 <button class="btn" onclick="requestPayment('Flutterwave')">Pay with Flutterwave</button>
 </div>
 <footer class="site-footer"><div class="container footer-grid"><div class="footer-brand"><img src="logo.png" class="footer-logo" alt="Mamidav logo"><p>Integrated operational execution across agriculture, events, culinary services and power engineering.</p></div><div><h4>Company</h4><a href="index.html">Home</a><a href="about.html">About</a><a href="agriculture.html">Agriculture</a><a href="engineering.html">Engineering</a><a href="services.html">Services</a></div><div><h4>Quick links</h4><a href="investors.html">Investors</a><a href="dashboard.html">Dashboard</a><a href="cart.html">Cart</a><a href="contact.html">Contact Us</a></div><div><h4>Contact Us</h4><a href="#" class="copy-email" data-email="mail@mamidavintltd.com">mail@mamidavintltd.com</a><span>8:00 AM - 6:00 PM Monday - Saturday</span><span>Anuoluwapo street, Omusoko, Off Arigbawonwo, Mowe, Nigeria, 110115</span></div></div><div class="container footer-bottom"><span>© 2026 Mamidav International Limited</span><span>Integrated solutions. Reliable execution.</span></div></footer>
-<script src="nav.js?v=20260815d"></script>
-<script src="cart.js?v=20260815d"></script>
+<script src="nav.js"></script>
+<script src="cart.js"></script>
 </body></html>

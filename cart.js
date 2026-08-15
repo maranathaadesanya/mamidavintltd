@@ -1953,7 +1953,7 @@ document.addEventListener(
         "header nav"
       );
 
-    if (toggle && nav) {
+    if (toggle && nav && nav.dataset.navigationReady !== "true") {
 
       toggle.addEventListener(
         "click",
