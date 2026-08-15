@@ -26,7 +26,7 @@ function old_val($k, $default='') {
 <title>Mamidav International Limited | Book Us</title>
 <meta name="description" content="Book Mamidav for event management. Select your package and submit a booking enquiry.">
 <link rel="icon" href="logo.png">
-<link rel="stylesheet" href="style.css?v=20260815">
+<link rel="stylesheet" href="style.css?v=20260815b">
 </head>
 <body>
 <div class="site-topbar"><div class="container"><span>Integrated Agribusiness, Engineering &amp; Services</span><span class="secondary">Reliable. Practical. Professional.</span></div></div>
@@ -164,7 +164,7 @@ function old_val($k, $default='') {
   });
 })();
 </script>
-<script src="nav.js?v=20260815"></script>
-<script src="cart.js?v=20260815"></script>
+<script src="nav.js?v=20260815b"></script>
+<script src="cart.js?v=20260815b"></script>
 </body>
 </html>

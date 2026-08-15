@@ -12,7 +12,7 @@ unset($_SESSION['booking_success_ref'], $_SESSION['booking_success_pkg'], $_SESS
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Booking Request Received — Mamidav</title>
-  <link rel="stylesheet" href="style.css?v=20260815">
+  <link rel="stylesheet" href="style.css?v=20260815b">
 </head>
 <body>
 <header><div class="header-inner"><a href="index.html"><img src="logo.png" class="logo" alt="Mamidav logo"></a></div></header>
