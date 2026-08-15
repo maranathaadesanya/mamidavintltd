@@ -462,12 +462,10 @@ function renderAuthNav() {
               class="account-menu"
               hidden
             >
-              <a href="dashboard.html">
-                Dashboard
-              </a>
+              ${currentUser.is_admin ? '<a href="dashboard.html">Dashboard</a>' : ''}
 
               <a href="profile.html">
-                Profile
+                My Account
               </a>
 
               <a
@@ -1743,6 +1741,33 @@ async function loadDashboardSummary() {
   `).join("");
 }
 
+async function loadMyActivity() {
+  const body = document.getElementById("my-activity-body");
+  if (!body) return;
+
+  const { ok, data } = await apiGet("my_activity.php");
+  if (!ok || !data.activity || data.activity.length === 0) {
+    body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted)">No activity yet - your orders and inquiries will show up here.</td></tr>';
+    return;
+  }
+
+  const typeLabels = {
+    order: "Order",
+    investment_inquiry: "Investment Inquiry",
+    event_booking: "Event Booking",
+    consultation_request: "Consultation",
+  };
+
+  body.innerHTML = data.activity.map((row) => `
+    <tr>
+      <td>${escapeHtml(row.created_at)}</td>
+      <td>${escapeHtml(typeLabels[row.type] || row.type)}</td>
+      <td>${escapeHtml(row.summary)}</td>
+      <td>${row.amount != null ? formatNaira(row.amount) : "-"}</td>
+    </tr>
+  `).join("");
+}
+
 // ---------- DOM initialization ----------
 
 document.addEventListener(
@@ -1864,6 +1889,12 @@ if (signupForm) {
 
     await checkSession();
 
+    if (!(currentUser && currentUser.is_admin)) {
+      document.querySelectorAll('footer a[href="dashboard.html"]').forEach((el) => {
+        el.remove();
+      });
+    }
+
     if (
       document.body.dataset.requireLogin ===
         "true" &&
@@ -1876,19 +1907,24 @@ if (signupForm) {
       return;
     }
 
+    if (
+      document.body.dataset.requireAdmin === "true" &&
+      !(currentUser && currentUser.is_admin)
+    ) {
+
+      window.location.href = "profile.html";
+
+      return;
+    }
+
     renderProfilePage();
 
-    const adminSummary = document.getElementById("admin-summary");
-    if (adminSummary) {
-      const exportDenied = document.getElementById("export-purchases-denied");
-      const allowed = !!(currentUser && currentUser.is_admin);
-      adminSummary.hidden = !allowed;
-      if (exportDenied) {
-        exportDenied.hidden = allowed;
-      }
-      if (allowed) {
-        await loadDashboardSummary();
-      }
+    if (document.getElementById("stat-orders")) {
+      await loadDashboardSummary();
+    }
+
+    if (document.getElementById("my-activity-body")) {
+      await loadMyActivity();
     }
 
     await loadCart();
