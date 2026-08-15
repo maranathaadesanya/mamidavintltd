@@ -467,7 +467,7 @@ function renderAuthNav() {
       } else {
 
         span.innerHTML =
-          `<a href="login.html">Login</a>`;
+          `<a href="login.html">Login</a><a href="signup.html">Sign Up</a>`;
       }
 
       nav.appendChild(span);
