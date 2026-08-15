@@ -1,6 +1,6 @@
 <?php
 // Copy this file to api/email_config.local.php and fill in real SMTP credentials.
-// Do NOT commit api/email_config.local.php — it should be excluded from version control.
+// Do NOT commit api/email_config.local.php - it should be excluded from version control.
 
 // SMTP configuration for PHPMailer
 define('SMTP_HOST', 'smtp.hostinger.com');

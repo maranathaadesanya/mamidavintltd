@@ -2,7 +2,7 @@
 require_once __DIR__ . '/bootstrap.php';
 require_admin();
 
-// Override bootstrap.php's default JSON content type — this endpoint
+// Override bootstrap.php's default JSON content type - this endpoint
 // downloads a CSV file instead.
 header('Content-Type: text/csv; charset=UTF-8');
 header('Content-Disposition: attachment; filename="mamidav-purchases-' . date('Y-m-d') . '.csv"');

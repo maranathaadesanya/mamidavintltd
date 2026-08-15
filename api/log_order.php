@@ -2,7 +2,7 @@
 require_once __DIR__ . '/bootstrap.php';
 
 // Logs a completed cart checkout for the sales record (CSV export via
-// export_purchases.php). Deliberately does NOT require login — guest
+// export_purchases.php). Deliberately does NOT require login - guest
 // checkout must keep working. Best-effort: the mailto order flow in
 // cart.js still completes even if this fails.
 

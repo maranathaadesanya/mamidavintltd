@@ -84,7 +84,7 @@ $package_price = $pkgInfo['price'];
 // Booking reference
 $ref = 'MIL-EVT-' . date('Ymd') . '-' . strtoupper(bin2hex(random_bytes(3)));
 
-// Log for sales/business record (CSV export). Best-effort — a DB hiccup
+// Log for sales/business record (CSV export). Best-effort - a DB hiccup
 // here must never block the actual booking email flow below.
 try {
     require_once __DIR__ . '/api/bootstrap.php';
@@ -98,7 +98,7 @@ try {
 }
 
 // Build email bodies
-$subject_admin = "New Event Booking Request — $ref";
+$subject_admin = "New Event Booking Request - $ref";
 $body_lines = [];
 $body_lines[] = "New Event Booking Request";
 $body_lines[] = "Reference: $ref";
@@ -207,7 +207,7 @@ try {
 }
 
 // Send confirmation to customer (best-effort)
-$subject_cust = "Your Mamidav booking request has been received — $ref";
+$subject_cust = "Your Mamidav booking request has been received - $ref";
 $cust_lines = [];
 $cust_lines[] = "Hello $safe_name,";
 $cust_lines[] = "";

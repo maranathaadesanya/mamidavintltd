@@ -339,7 +339,7 @@ function placeOrder() {
     "Delivery/Pickup address:",
   ].join("\n");
 
-  // Best-effort logging for the sales record — never blocks the order itself.
+  // Best-effort logging for the sales record - never blocks the order itself.
   apiPost("log_order.php", {
     items: cartState,
     total: cartTotal(),
@@ -1736,9 +1736,9 @@ async function loadDashboardSummary() {
     <tr>
       <td>${escapeHtml(row.created_at)}</td>
       <td>${escapeHtml(typeLabels[row.type] || row.type)}</td>
-      <td>${escapeHtml(row.customer_name || "—")}</td>
+      <td>${escapeHtml(row.customer_name || "-")}</td>
       <td>${escapeHtml(row.summary)}</td>
-      <td>${row.amount != null ? formatNaira(row.amount) : "—"}</td>
+      <td>${row.amount != null ? formatNaira(row.amount) : "-"}</td>
     </tr>
   `).join("");
 }

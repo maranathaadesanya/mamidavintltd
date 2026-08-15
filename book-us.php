@@ -26,7 +26,7 @@ function old_val($k, $default='') {
 <title>Mamidav International Limited | Book Us</title>
 <meta name="description" content="Book Mamidav for event management. Select your package and submit a booking enquiry.">
 <link rel="icon" href="logo.png">
-<link rel="stylesheet" href="style.css?v=20260815b">
+<link rel="stylesheet" href="style.css?v=20260815c">
 </head>
 <body>
 <div class="site-topbar"><div class="container"><span>Integrated Agribusiness, Engineering &amp; Services</span><span class="secondary">Reliable. Practical. Professional.</span></div></div>
@@ -74,9 +74,9 @@ function old_val($k, $default='') {
           <label>Change package
             <select id="package-select" name="package_choice">
               <option value="">(keep selected)</option>
-              <option value="basic">Basic — ₦150,000</option>
-              <option value="standard">Standard — ₦350,000</option>
-              <option value="premium">Premium — ₦750,000</option>
+              <option value="basic">Basic - ₦150,000</option>
+              <option value="standard">Standard - ₦350,000</option>
+              <option value="premium">Premium - ₦750,000</option>
             </select>
           </label>
         </fieldset>
@@ -106,7 +106,7 @@ function old_val($k, $default='') {
   </div>
 </main>
 
-<footer class="site-footer"><div class="container footer-grid"><div class="footer-brand"><img src="logo.png" class="footer-logo" alt="Mamidav logo"><p>Integrated operational execution across agriculture, events, culinary services and power engineering.</p></div><div><h4>Company</h4><a href="index.html">Home</a><a href="about.html">About</a><a href="agriculture.html">Agriculture</a><a href="engineering.html">Engineering</a><a href="services.html">Services</a></div><div><h4>Quick links</h4><a href="investors.html">Investors</a><a href="dashboard.html">Dashboard</a><a href="cart.html">Cart</a><a href="contact.html">Contact Us</a></div><div><h4>Contact Us</h4><a href="#" class="copy-email" data-email="mail@mamidavintltd.com">mail@mamidavintltd.com</a><span>8:00 AM – 6:00 PM Monday - Saturday</span><span>Anuoluwapo street, Omusoko, Off Arigbawonwo, Mowe, Nigeria, 110115</span></div></div><div class="container footer-bottom"><span>© 2026 Mamidav International Limited</span><span>Integrated solutions. Reliable execution.</span></div></footer>
+<footer class="site-footer"><div class="container footer-grid"><div class="footer-brand"><img src="logo.png" class="footer-logo" alt="Mamidav logo"><p>Integrated operational execution across agriculture, events, culinary services and power engineering.</p></div><div><h4>Company</h4><a href="index.html">Home</a><a href="about.html">About</a><a href="agriculture.html">Agriculture</a><a href="engineering.html">Engineering</a><a href="services.html">Services</a></div><div><h4>Quick links</h4><a href="investors.html">Investors</a><a href="dashboard.html">Dashboard</a><a href="cart.html">Cart</a><a href="contact.html">Contact Us</a></div><div><h4>Contact Us</h4><a href="#" class="copy-email" data-email="mail@mamidavintltd.com">mail@mamidavintltd.com</a><span>8:00 AM - 6:00 PM Monday - Saturday</span><span>Anuoluwapo street, Omusoko, Off Arigbawonwo, Mowe, Nigeria, 110115</span></div></div><div class="container footer-bottom"><span>© 2026 Mamidav International Limited</span><span>Integrated solutions. Reliable execution.</span></div></footer>
 
 <script>
 (function(){
@@ -164,7 +164,7 @@ function old_val($k, $default='') {
   });
 })();
 </script>
-<script src="nav.js?v=20260815b"></script>
-<script src="cart.js?v=20260815b"></script>
+<script src="nav.js?v=20260815c"></script>
+<script src="cart.js?v=20260815c"></script>
 </body>
 </html>

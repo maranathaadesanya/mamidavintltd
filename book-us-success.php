@@ -11,8 +11,8 @@ unset($_SESSION['booking_success_ref'], $_SESSION['booking_success_pkg'], $_SESS
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Booking Request Received — Mamidav</title>
-  <link rel="stylesheet" href="style.css?v=20260815b">
+  <title>Booking Request Received - Mamidav</title>
+  <link rel="stylesheet" href="style.css?v=20260815c">
 </head>
 <body>
 <header><div class="header-inner"><a href="index.html"><img src="logo.png" class="logo" alt="Mamidav logo"></a></div></header>
@@ -24,7 +24,7 @@ unset($_SESSION['booking_success_ref'], $_SESSION['booking_success_pkg'], $_SESS
       <p><strong>Booking Reference:</strong> <?php echo $ref; ?></p>
     <?php endif; ?>
     <?php if ($pkg): ?>
-      <p><strong>Selected Package:</strong> <?php echo $pkg; ?> — ₦<?php echo $price; ?></p>
+      <p><strong>Selected Package:</strong> <?php echo $pkg; ?> - ₦<?php echo $price; ?></p>
     <?php endif; ?>
     <p>Our team will review your request and contact you regarding availability and next steps.</p>
     <p style="margin-top:18px"><a class="btn" href="index.html">Return to Home</a> <a class="btn" href="services.html">View Services</a></p>
