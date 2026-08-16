@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/bootstrap.php';
-require_login();
+require_customer();
 $input = json_input(); $reference = trim((string)($input['reference'] ?? '')); $method = $input['method'] ?? 'paystack';
 if (!in_array($method, ['paystack','ussd'], true)) { http_response_code(400); echo json_encode(['error'=>'Unsupported payment method.']); exit; }
 if (!defined('PAYSTACK_SECRET_KEY') || PAYSTACK_SECRET_KEY === '') { http_response_code(503); echo json_encode(['error'=>'Online payments are not configured yet.']); exit; }

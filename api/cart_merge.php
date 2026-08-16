@@ -3,7 +3,7 @@
 // their new account cart. Prices/names are re-looked-up from the server
 // catalog, never trusted from the client.
 require_once __DIR__ . '/bootstrap.php';
-require_login();
+require_customer();
 
 $catalog = require __DIR__ . '/catalog.php';
 $input = json_input();

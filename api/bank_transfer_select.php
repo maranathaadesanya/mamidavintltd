@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/bootstrap.php';
-require_login();
+require_customer();
 $reference = trim((string)(json_input()['reference'] ?? ''));
 $pdo=get_db(); $stmt=$pdo->prepare('UPDATE orders SET payment_method="bank_transfer", payment_reference=reference WHERE reference=? AND user_id=? AND payment_status="pending"');
 $stmt->execute([$reference,current_user_id()]);

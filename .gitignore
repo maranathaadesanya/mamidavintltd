@@ -4,3 +4,5 @@ api/email_config.local.php
 
 # Composer dependencies
 /vendor/
+.continuerc.json
+.continue/agents/

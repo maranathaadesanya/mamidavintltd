@@ -45,6 +45,15 @@ function require_login() {
     }
 }
 
+function require_customer() {
+    require_login();
+    if (is_admin()) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Customer checkout is unavailable for administrator accounts.']);
+        exit;
+    }
+}
+
 function is_admin() {
     $userId = current_user_id();
     if (!$userId) {

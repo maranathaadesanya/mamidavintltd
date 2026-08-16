@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/bootstrap.php';
-require_login();
+require_customer();
 
 $input = json_input();
 $id = trim($input['id'] ?? '');

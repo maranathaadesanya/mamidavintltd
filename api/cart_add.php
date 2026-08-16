@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/bootstrap.php';
-require_login();
+require_customer();
 
 $catalog = require __DIR__ . '/catalog.php';
 $input = json_input();
