@@ -329,10 +329,19 @@ async function placeOrder() {
     return;
   }
 
+  if (!currentUser) {
+    window.location.href = "login.html?next=cart.html";
+    return;
+  }
+
   const button = document.getElementById("place-order-btn");
   if (button) button.disabled = true;
   try {
     const { ok, data } = await apiPost("checkout_create.php", {});
+    if (!ok && data && (data.error === "Not logged in.")) {
+      window.location.href = "login.html?next=cart.html";
+      return;
+    }
     if (!ok || !data.reference) throw new Error(data.error || "Could not start checkout.");
     sessionStorage.setItem("mamidav_checkout", JSON.stringify(data));
     window.location.href = "payments.html?order=" + encodeURIComponent(data.reference);
@@ -467,10 +476,10 @@ function renderAuthNav() {
               class="account-menu"
               hidden
             >
-              ${currentUser.is_admin ? '<a href="dashboard.html">Dashboard</a>' : ''}
+              ${currentUser.is_admin ? '<a href="dashboard.html">Admin Dashboard</a><a href="orders.html">Manage Orders</a>' : ''}
 
               <a href="profile.html">
-                My Account
+                ${currentUser.is_admin ? 'Account' : 'My Account'}
               </a>
 
               <a
@@ -1913,16 +1922,6 @@ if (signupForm) {
       const nav = document.querySelector("header nav");
       if (nav) {
         nav.querySelectorAll(".admin-primary-link").forEach((el) => el.remove());
-        const dashboard = document.createElement("a");
-        dashboard.href = "dashboard.html";
-        dashboard.className = "admin-primary-link";
-        dashboard.textContent = "Admin Dashboard";
-        const orders = document.createElement("a");
-        orders.href = "orders.html";
-        orders.className = "admin-primary-link";
-        orders.textContent = "Manage Orders";
-        nav.prepend(orders);
-        nav.prepend(dashboard);
       }
       const actions = document.getElementById("profile-actions");
       if (actions) {
