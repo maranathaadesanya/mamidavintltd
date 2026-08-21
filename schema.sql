@@ -42,6 +42,10 @@ CREATE TABLE IF NOT EXISTS cart_items (
 -- here: authenticated administrators are the existing users with is_admin = 1;
 -- normal customer accounts remain is_admin = 0.
 
+-- Google sign-in support. Safe to run even if it already exists - MySQL
+-- will just error on the duplicate column, which you can ignore.
+ALTER TABLE users ADD COLUMN google_id VARCHAR(255) NULL UNIQUE;
+
 -- Unified log of every cart order, investment inquiry, event booking and
 -- consultation request, for CSV/Excel export and business analysis.
 CREATE TABLE IF NOT EXISTS purchase_log (

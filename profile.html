@@ -31,6 +31,17 @@
 <button type="submit" class="btn">Save Changes</button>
 </form>
 
+<div id="customer-orders" style="margin-top:36px">
+<h3 style="color:var(--burgundy);font-family:'Playfair Display',Georgia,serif">My Orders</h3>
+<div class="table-wrap">
+<table class="cart-table">
+<thead><tr><th>Date</th><th>Reference</th><th>Payment</th><th>Status</th><th>Total</th></tr></thead>
+<tbody id="my-orders-body"><tr><td colspan="5" style="text-align:center;color:var(--muted)">Loading...</td></tr></tbody>
+</table>
+</div>
+<div id="my-orders-pages" class="cart-actions"></div>
+</div>
+
 <div id="profile-actions" style="text-align:center;margin-top:20px">
 <a href="cart.html" class="btn-outline-dark">View My Cart</a>
 <button class="btn-outline-dark" onclick="doLogout()">Log Out</button>
